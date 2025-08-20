@@ -16,7 +16,7 @@ const myFont = localfont({ src: "../../fonts/Cairo-Medium.ttf" });
 export const metadata: Metadata = {
   // metadataBase: new URL("https://markup.vip"),
   title: {
-    default: "Mansour Admin Dashboard",
+    default: "Qasr Alsultan Dashboard",
     template: "%s | Mansour",
   },
   icons: {

@@ -15,7 +15,7 @@ interface CategoryClientProps {
   data: CategoryColumnType[];
 }
 
-const CategoriesClient: React.FC<CategoryClientProps> = ({ data }) => {
+const BranchesClient: React.FC<CategoryClientProps> = ({ data }) => {
   const router = useRouter();
 
   const { data: session } = useSession();
@@ -26,14 +26,11 @@ const CategoriesClient: React.FC<CategoryClientProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between ">
         <Heading
-          title={`Categories (${data.length})`}
-          description="Mange Categories for your store "
+          title={`Branches (${data.length})`}
+          description="Mange Branches for your store "
         />
 
-        <Button
-          className=""
-          onClick={() => router.push(`/home/categories/new`)}
-        >
+        <Button className="" onClick={() => router.push(`/home/branches/new`)}>
           <Plus className="mr-2 h-4 w-4" />
           Add New
         </Button>
@@ -46,6 +43,7 @@ const CategoriesClient: React.FC<CategoryClientProps> = ({ data }) => {
         <>
           <Heading title="API" description="API calls for categories" />
           <Separator className="bg-slate-300" />
+
           <ApiList entityName="categories" entityIdName="caytegoriesId" />
         </>
       ) : null}
@@ -53,4 +51,4 @@ const CategoriesClient: React.FC<CategoryClientProps> = ({ data }) => {
   );
 };
 
-export default CategoriesClient;
+export default BranchesClient;

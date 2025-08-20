@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { Button } from "../button";
@@ -19,7 +19,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   onChange,
   onRemove,
   value,
-  className
+  className,
 }) => {
   const [isMounted, setIsMounted] = useState(false);
 
@@ -27,49 +27,36 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     setIsMounted(true);
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onUpload = (result: any) => {
-    if (result?.event === "success") {
-      onChange(result.info.secure_url);
-    } else {
-      console.error("Upload failed:", result);
-    }
-  };
-
   const handleRemove = async (url: string) => {
-    // Extract public ID from the URL
-    const publicId = url.split('/').pop()?.split('.')[0] || '';
-    
+    const parts = url.split("/upload/");
+    const publicId = parts[1]?.split(".")[0] ?? "";
+
     try {
-      // Delete from Cloudinary
-      await fetch('/api/delete-image', {
-        method: 'POST',
+      await fetch("/api/delete-image", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ publicId }),
       });
-      
-      // Remove from local state
+
       onRemove(url);
     } catch (error) {
-      console.error('Error deleting image:', error);
+      console.error("Error deleting image:", error);
     }
   };
 
-  if (!isMounted) {
-    return null;
-  }
+  if (!isMounted) return null;
 
   return (
     <div>
-      <div className={`mb-4 flex items-center flex-wrap gap-4`}>
+      <div className="mb-4 flex items-center flex-wrap gap-4">
         {value.map((url) => (
           <div
             className={`relative w-[200px] h-[200px] rounded-md overflow-hidden ${className}`}
             key={url}
           >
-            <div className="z-10 absolute top-2 right-2">
+            <div className="absolute top-2 right-2 z-10">
               <Button
                 type="button"
                 onClick={() => handleRemove(url)}
@@ -85,18 +72,24 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         ))}
       </div>
 
-      <CldUploadWidget onUpload={onUpload} uploadPreset="d4aeanaa">
+      {/* ✅ latest next-cloudinary uses onSuccess instead of onUpload */}
+      <CldUploadWidget
+        uploadPreset="d4aeanaa"
+        onSuccess={(result) => {
+          if (typeof result.info === "object" && "secure_url" in result.info) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onChange((result.info as any).secure_url);
+          }
+        }}
+        onError={(error) => console.error("Upload failed:", error)}
+      >
         {({ open }) => {
-          const onClick = () => {
-            open();
-          };
-
           return (
             <Button
               type="button"
               disabled={disabled}
               variant="secondary"
-              onClick={onClick}
+              onClick={() => open()}
               className="bg-slate-600 text-white hover:bg-slate-500"
             >
               <ImagePlusIcon className="h-4 w-4 mr-1 text-sm" />

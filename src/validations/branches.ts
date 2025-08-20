@@ -1,8 +1,6 @@
 import { z } from "zod";
 
-export const createCategoriesSchema = z.object({
-  slugEn: z.string().min(2).max(100).optional(),
-  slugAr: z.string().min(2).max(100).optional(),
+export const createBranchesSchema = z.object({
   nameEn: z.string().min(1),
   nameAr: z.string().min(1),
   titleEn: z.string().min(1),
@@ -10,10 +8,8 @@ export const createCategoriesSchema = z.object({
   imageUrl: z.string().min(1),
 });
 
-export interface ICreateCategoriesDto {
+export interface ICreateBranchesDto {
   id: string;
-  slugEn: string;
-  slugAr: string;
   nameEn: string;
   nameAr: string;
   titleEn: string;

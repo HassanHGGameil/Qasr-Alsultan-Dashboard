@@ -75,6 +75,12 @@ const MainNav = ({
     },
     {
       id: 5,
+      href: "/home/branches",
+      label: "Branches",
+      icon: <IoListOutline />,
+    },
+    {
+      id: 6,
       href: "/home/categories",
       label: "Categories",
       icon: <IoListOutline />,

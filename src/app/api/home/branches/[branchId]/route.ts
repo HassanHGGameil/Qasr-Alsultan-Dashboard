@@ -1,6 +1,5 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import { CorsHandler } from "@/lib/CorsHandler/CorsHndler";
-import { generateSlug } from "@/lib/HandleSlug/slugfy";
 import prismadb from "@/lib/prismaDB/prismadb";
 import { axiosErrorHandler } from "@/utils";
 import {
@@ -16,29 +15,27 @@ export async function OPTIONS(req: NextRequest) {
 }
 
 type PageProps = {
-  params: Promise<{ slug?: string; categoriesId: string }>;
+  params: Promise<{ branchId?: string }>;
 };
 
 export async function GET(req: NextRequest, { params }: PageProps) {
   try {
-    if (!(await params).slug) {
+    if (!(await params).branchId) {
       return new NextResponse("ProductId is required", { status: 400 });
     }
 
-    const product = await prismadb.categories.findUnique({
+    const branches = await prismadb.branches.findUnique({
       where: {
-        id: (await params).categoriesId,
-        slugEn: (await params).slug,
-        slugAr: (await params).slug,
+        id: (await params).branchId,
       },
     });
 
-    if (!product) {
+    if (!branches) {
       return new NextResponse("Product not found", { status: 404 });
     }
 
     const headers = CorsHandler(req);
-    return NextResponse.json(product, { status: 200, headers });
+    return NextResponse.json(branches, { status: 200, headers });
   } catch (error) {
     axiosErrorHandler(error);
   }
@@ -67,25 +64,19 @@ export async function PATCH(req: NextRequest, { params }: PageProps) {
         { status: 400 }
       );
     }
-    const slugEn = generateSlug(body.nameEn);
-    const slugAr = generateSlug(body.nameAr, true);
 
     // Update product
-    const categories = await prismadb.categories.update({
+    const branches = await prismadb.branches.update({
       where: {
-        id: (await params).categoriesId,
-        slugEn: (await params).slug,
-        slugAr: (await params).slug,
+        id: (await params).branchId,
       },
       data: {
         ...body,
-        slugEn,
-        slugAr,
       },
     });
 
     const headers = CorsHandler(req);
-    return NextResponse.json(categories, { headers });
+    return NextResponse.json(branches, { headers });
   } catch (error) {
     axiosErrorHandler(error);
   }
@@ -104,16 +95,14 @@ export async function DELETE(req: NextRequest, { params }: PageProps) {
 
   try {
     // Attempt to delete the product (no user restriction)
-    const categories = await prismadb.categories.delete({
+    const branches = await prismadb.branches.delete({
       where: {
-        slugEn: (await params).slug,
-        slugAr: (await params).slug,
-        id: (await params).categoriesId,
+        id: (await params).branchId,
       },
     });
 
     const headers = CorsHandler(req);
-    return NextResponse.json(categories, { status: 200, headers });
+    return NextResponse.json(branches, { status: 200, headers });
   } catch (error) {
     axiosErrorHandler(error);
   }
