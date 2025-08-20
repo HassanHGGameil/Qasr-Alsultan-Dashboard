@@ -1,0 +1,13 @@
+{
+    "HomePage": {
+      "title": "Hello world!",
+      "about": "Go to the about page"
+    },
+    "Header":{
+      "home": "الرئسيه",
+      "about": "من نحن",
+      "contact": "الاتصال",
+      "login": "Log in",
+      "signup": "Sign up"
+    }
+  }

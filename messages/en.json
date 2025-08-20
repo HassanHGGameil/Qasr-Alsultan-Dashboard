@@ -1,0 +1,13 @@
+{
+    "HomePage": {
+      "title": "Hello world!",
+      "about": "Go to the about page"
+    },
+    "Header":{
+      "home": "Home",
+      "about": "About",
+      "contact": "Contact",
+      "login": "Log in",
+      "signup": "Sign up"
+    }
+  }
