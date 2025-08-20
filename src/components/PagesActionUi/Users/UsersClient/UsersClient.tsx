@@ -7,7 +7,7 @@ import Heading from "@/components/common/Heading/Heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
-import ApiList from "@/components/ui/api-list";
+// import ApiList from "@/components/ui/api-list";
 
 
 interface UserClientProps {
@@ -45,7 +45,7 @@ const UsersClient: React.FC<UserClientProps> = ({ data }) => {
       />
 
 
-      <Heading  
+      {/* <Heading  
         title="API"
         description="API calls for Banner"
         
@@ -55,7 +55,7 @@ const UsersClient: React.FC<UserClientProps> = ({ data }) => {
       <ApiList
         entityName="users"
         entityIdName="userId"
-      />
+      /> */}
 
 
     </>

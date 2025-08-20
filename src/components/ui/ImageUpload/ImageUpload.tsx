@@ -72,7 +72,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         ))}
       </div>
 
-      {/* ✅ latest next-cloudinary uses onSuccess instead of onUpload */}
       <CldUploadWidget
         uploadPreset="d4aeanaa"
         onSuccess={(result) => {
