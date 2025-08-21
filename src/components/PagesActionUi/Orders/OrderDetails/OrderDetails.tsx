@@ -1,7 +1,13 @@
 "use client";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { formatCurrency } from "@/lib/formatters";
 import { OrderStatus, DeliveryStatus } from "@prisma/client";
@@ -25,13 +31,14 @@ interface UserInfo {
   id: string;
   name: string;
   email: string;
-};
+}
 
 interface OrderDetailsProps {
   order: {
     id: string;
     user?: UserInfo;
     name: string;
+    branch: string;
     phone: string;
     address: string;
     isPaid: boolean;
@@ -67,56 +74,68 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [currentStatus, setCurrentStatus] = useState<OrderStatus>(order.status);
-  const [currentDeliveryStatus, setCurrentDeliveryStatus] = useState<DeliveryStatus | undefined>(order.deliveryStatus || undefined);
+  const [currentDeliveryStatus, setCurrentDeliveryStatus] = useState<
+    DeliveryStatus | undefined
+  >(order.deliveryStatus || undefined);
 
-  const formattedDate = useMemo(() => 
-    format(new Date(order.createdAt), "MMM dd, yyyy hh:mm a"), 
+  const formattedDate = useMemo(
+    () => format(new Date(order.createdAt), "MMM dd, yyyy hh:mm a"),
     [order.createdAt]
   );
 
-  const handleStatusUpdate = useCallback(async (
-    type: "order" | "delivery",
-    newStatus: OrderStatus | DeliveryStatus
-  ) => {
-    try {
-      setLoading(true);
-      
-      // Validate status transitions
-      if (type === "delivery" && !order.isPaid) {
-        throw new Error("Cannot update delivery status for unpaid orders");
+  const handleStatusUpdate = useCallback(
+    async (
+      type: "order" | "delivery",
+      newStatus: OrderStatus | DeliveryStatus
+    ) => {
+      try {
+        setLoading(true);
+
+        // Validate status transitions
+        if (type === "delivery" && !order.isPaid) {
+          throw new Error("Cannot update delivery status for unpaid orders");
+        }
+
+        const response = await fetch(`/api/orders/${order.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            [type === "order" ? "status" : "deliveryStatus"]: newStatus,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.message || `Failed to update ${type} status`
+          );
+        }
+
+        if (type === "order") {
+          setCurrentStatus(newStatus as OrderStatus);
+        } else {
+          setCurrentDeliveryStatus(newStatus as DeliveryStatus);
+        }
+
+        toast.success(
+          `${type.charAt(0).toUpperCase() + type.slice(1)} status updated`
+        );
+        router.refresh();
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : `Failed to update ${type} status`;
+        toast.error(errorMessage);
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-
-      const response = await fetch(`/api/orders/${order.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          [type === "order" ? "status" : "deliveryStatus"]: newStatus 
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Failed to update ${type} status`);
-      }
-
-      if (type === "order") {
-        setCurrentStatus(newStatus as OrderStatus);
-      } else {
-        setCurrentDeliveryStatus(newStatus as DeliveryStatus);
-      }
-
-      toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} status updated`);
-      router.refresh();
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : `Failed to update ${type} status`;
-      toast.error(errorMessage);
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }, [order.id, order.isPaid, router]);
+    },
+    [order.id, order.isPaid, router]
+  );
 
   return (
     <div className="space-y-6">
@@ -140,9 +159,18 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
                   <p className="text-sm text-muted-foreground">Order Date</p>
                   <p>{formattedDate}</p>
                 </div>
+                
                 <div>
-                  <p className="text-sm text-muted-foreground">Payment Method</p>
+                  <p className="text-sm text-muted-foreground">
+                    Payment Method
+                  </p>
                   <p>{order.paymentMethod || "Not specified"}</p>
+                  <div className="flex items-center gap-4">
+                  <span className="">Branch :-</span>
+                  <h2 className="text-sm text-muted-foreground">
+                    {order.branch ? order.branch : "Not Branch"}
+                  </h2>
+                </div>
                 </div>
               </div>
 
@@ -181,9 +209,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
 
               <div className="flex justify-between">
                 <p className="font-medium">Total</p>
-                <p className="font-bold">
-                  {formatCurrency(order.totalPrice)}
-                </p>
+                <p className="font-bold">{formatCurrency(order.totalPrice)}</p>
               </div>
             </div>
           </CardContent>
@@ -224,7 +250,9 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
                   <p>Order Status</p>
                   <Select
                     value={currentStatus}
-                    onValueChange={(value: OrderStatus) => handleStatusUpdate("order", value)}
+                    onValueChange={(value: OrderStatus) =>
+                      handleStatusUpdate("order", value)
+                    }
                     disabled={loading}
                   >
                     <SelectTrigger className="w-[150px]">
@@ -255,7 +283,9 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
                     <p>Delivery Status</p>
                     <Select
                       value={currentDeliveryStatus}
-                      onValueChange={(value: DeliveryStatus) => handleStatusUpdate("delivery", value)}
+                      onValueChange={(value: DeliveryStatus) =>
+                        handleStatusUpdate("delivery", value)
+                      }
                       disabled={loading}
                     >
                       <SelectTrigger className="w-[150px]">
@@ -263,7 +293,11 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : currentDeliveryStatus ? (
                           <SelectValue>
-                            <Badge className={deliveryStatusColors[currentDeliveryStatus]}>
+                            <Badge
+                              className={
+                                deliveryStatusColors[currentDeliveryStatus]
+                              }
+                            >
                               {currentDeliveryStatus}
                             </Badge>
                           </SelectValue>

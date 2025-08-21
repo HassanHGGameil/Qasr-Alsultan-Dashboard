@@ -50,6 +50,7 @@ export async function POST(req: Request) {
         phone: customer.phone,
         address: customer.address,
         city: customer.city,
+        branch: customer.branch,
         zipCode: customer.zipCode,
         orderItem: {
           create: items.map((item: OrderItem) => ({
@@ -81,6 +82,7 @@ export async function POST(req: Request) {
       name: order.name || "",
       city: order.city || "",
       zipCode: order.zipCode || "",
+      branch: customer.branch,
       address: order.address,
       isPaid: order.isPaid,
       totalPrice: itemsPrice,

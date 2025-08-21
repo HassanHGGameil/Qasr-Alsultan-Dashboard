@@ -5,6 +5,7 @@ type OrderColumnType = {
   address: string; // Non-nullable with default "" in Prisma
   city: string; // Non-nullable with default "" in Prisma
   zipCode: string; // Non-nullable with default "" in Prisma
+  branch: string; // Non-nullable with default "" in Prisma
   isPaid: boolean;
   totalPrice: number; // Changed from string to number (since Prisma uses Int)
   status: string;

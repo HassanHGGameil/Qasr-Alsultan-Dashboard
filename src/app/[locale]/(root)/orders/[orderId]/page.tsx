@@ -17,6 +17,7 @@ interface OrderDetailsType {
   name: string;
   phone: string;
   address: string;
+  branch: string;
   isPaid: boolean;
   totalPrice: number;
   status: OrderStatus;
@@ -71,6 +72,7 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
     const formattedOrder: OrderDetailsType = {
       id: order.id,
       name: order.name,
+      branch: order.branch,
       phone: order.phone || "Not provided",
       address: order.address || "Not provided",
       isPaid: order.isPaid || false,

@@ -129,12 +129,14 @@ model Categories {
 }
 
 model Branches {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  nameEn    String
-  nameAr    String
-  titleEn   String
-  titleAr   String
-  imageUrl  String
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  nameEn   String
+  nameAr   String
+  titleEn  String
+  titleAr  String
+  imageUrl String
+
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -251,8 +253,9 @@ model Order {
   address String @default("")
   zipCode String @default("")
   city    String @default("")
+  branch    String @default("")
 
-  branch  String @default("")
+  
 
   orderItem OrderItem[]
   createdAt DateTime    @default(now())
@@ -292,6 +295,7 @@ enum DeliveryStatus {
 
 enum PaymentMethod {
   CASH_ON_DELIVERY
+  PAYMENT_AT_BRANCH
   WHATSUP
   STRIPE
   PAYMOB

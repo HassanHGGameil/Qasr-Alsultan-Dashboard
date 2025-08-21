@@ -31,6 +31,7 @@ const OrdersPage = async () => {
       name: item.name || "",
 
       city: item.city || "",
+      branch: item.branch || "",
 
       zipCode: item.zipCode || "",
       address: item.address,
