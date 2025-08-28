@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "@/i18n/routing";
-import { formatCurrency } from "@/lib/formatters";
+import { formater } from "@/lib/utils/utils";
 import { OrderStatus, DeliveryStatus } from "@prisma/client";
 import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
@@ -106,8 +106,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
           }),
         });
 
-          router.push(`/orders`);
-
+        router.push(`/orders`);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -163,18 +162,18 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
                   <p className="text-sm text-muted-foreground">Order Date</p>
                   <p>{formattedDate}</p>
                 </div>
-                
+
                 <div>
                   <p className="text-sm text-muted-foreground">
                     Payment Method
                   </p>
                   <p>{order.paymentMethod || "Not specified"}</p>
                   <div className="flex items-center gap-4">
-                  <span className="">Branch :-</span>
-                  <h2 className="text-sm text-muted-foreground">
-                    {order.branch ? order.branch : "Not Branch"}
-                  </h2>
-                </div>
+                    <span className="">Branch :-</span>
+                    <h2 className="text-sm text-muted-foreground">
+                      {order.branch ? order.branch : "Not Branch"}
+                    </h2>
+                  </div>
                 </div>
               </div>
 
@@ -198,11 +197,11 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
                       <div className="flex-1">
                         <p className="font-medium">{product.name}</p>
                         <p className="text-sm text-muted-foreground">
-                          {product.quantity} * {formatCurrency(product.price)}
+                          {formater.format(product.quantity * product.price)}
                         </p>
                       </div>
                       <p className="font-medium">
-                        {formatCurrency(product.price * product.quantity)}
+                        {formater.format(product.quantity * product.price)}
                       </p>
                     </div>
                   ))}
@@ -213,7 +212,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
 
               <div className="flex justify-between">
                 <p className="font-medium">Total</p>
-                <p className="font-bold">{formatCurrency(order.totalPrice)}</p>
+                <p className="font-bold">{formater.format(order.totalPrice)}</p>
               </div>
             </div>
           </CardContent>

@@ -1,5 +1,6 @@
 import { OrderDetails } from "@/components/PagesActionUi/Orders/OrderDetails/OrderDetails";
 import prismadb from "@/lib/prismaDB/prismadb";
+import { formater } from "@/lib/utils/utils";
 import { DeliveryStatus, OrderStatus, PaymentMethod } from "@prisma/client";
 import { notFound } from "next/navigation";
 
@@ -64,7 +65,7 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
 
     const itemsPrice = order.orderItem.reduce((sum, orderItem) => {
       const price = orderItem.product.price || 0;
-      const quantity = Number(orderItem.quantity) || 1;
+      const quantity = orderItem.quantity || 1;
       return sum + price * quantity;
     }, 0);
 
@@ -86,7 +87,7 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
         quantity: Number(item.quantity) || 0, // Ensure this is always a number
         price: item.product?.price ?? 0,
         image: item.product?.images?.[0]?.url,
-        totalPrice: order.totalPrice ?? 0,
+        totalPrice: formater.format(Number(order.totalPrice)) ?? 0,
       })),
       createdAt: order.createdAt.toISOString(),
       updatedAt:
