@@ -6,7 +6,7 @@ const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(req: NextRequest) {
   if (req.nextUrl.pathname === '/') {
-    return NextResponse.redirect(new URL('/ar', req.url));
+    return NextResponse.redirect(new URL('/en', req.url));
   }
 
   return intlMiddleware(req);

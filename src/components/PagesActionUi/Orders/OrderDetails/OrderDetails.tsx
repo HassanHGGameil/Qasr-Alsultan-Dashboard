@@ -9,12 +9,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { useRouter } from "@/i18n/routing";
 import { formatCurrency } from "@/lib/formatters";
 import { OrderStatus, DeliveryStatus } from "@prisma/client";
 import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -106,8 +106,12 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
           }),
         });
 
+          router.push(`/orders`);
+
+
         if (!response.ok) {
           const errorData = await response.json();
+
           throw new Error(
             errorData.message || `Failed to update ${type} status`
           );
