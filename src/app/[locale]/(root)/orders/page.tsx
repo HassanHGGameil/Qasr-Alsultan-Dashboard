@@ -1,5 +1,6 @@
 import OrderClient from "@/components/PagesActionUi/Orders/OrderClient/OrderClient";
 import prismadb from "@/lib/prismaDB/prismadb";
+import { formater } from "@/lib/utils/utils";
 import OrderColumnType from "@/types/OrderColumnType";
 import { format } from "date-fns";
 
@@ -36,7 +37,7 @@ const OrdersPage = async () => {
       zipCode: item.zipCode || "",
       address: item.address,
       isPaid: item.isPaid,
-      totalPrice: itemsPrice,
+      totalPrice: Number(formater.format(itemsPrice))  ,
       products: item.orderItem
         .map((orderItem) => orderItem.product.titleEn)
         .join(", "),

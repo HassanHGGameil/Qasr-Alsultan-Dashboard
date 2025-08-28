@@ -3,7 +3,6 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "@/i18n/routing";
-
 // Components
 import AlertModal from "@/components/Modals/alert-modal";
 import Heading from "@/components/common/Heading/Heading";
@@ -12,7 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
 import { Badge } from "@/components/ui/badge";
 
-// Types and Constants
 import OrderColumnType from "@/types/OrderColumnType";
 import { DOMAIN } from "@/lib/constains/constains";
 import Columns from "../Columns/Columns";
@@ -61,7 +59,6 @@ const OrderClient: React.FC<OrderClientProps> = ({ data }) => {
     }
   };
 
-  // Update local orders when data prop changes
   useEffect(() => {
     setOrders(data);
     setLastUpdate(new Date());
@@ -117,7 +114,6 @@ const OrderClient: React.FC<OrderClientProps> = ({ data }) => {
             break;
 
           case "ping":
-            // Keep-alive ping, no action needed
             break;
 
           default:

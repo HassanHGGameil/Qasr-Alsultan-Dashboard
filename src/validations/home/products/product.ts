@@ -6,8 +6,8 @@ export const productSchema = z.object({
   // Basic info
   titleEn: z.string().min(2).max(100),
   titleAr: z.string().min(2).max(100),
-  subtitleEn: z.string().min(2).max(200),
-  subtitleAr: z.string().min(2).max(200),
+  subtitleEn: z.string().min(2).max(400),
+  subtitleAr: z.string().min(2).max(400),
   descriptionEn: z.string().min(2).optional(),
   descriptionAr: z.string().min(2).optional(),
   images: z.object({ url: z.string() }).array(),

@@ -58,7 +58,6 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
         },
       },
     });
-
     if (!order) {
       return notFound();
     }

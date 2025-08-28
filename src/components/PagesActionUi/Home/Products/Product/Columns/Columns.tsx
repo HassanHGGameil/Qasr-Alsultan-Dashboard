@@ -6,13 +6,14 @@ import Image from "next/image";
 import ProductColumnType from "@/types/ProductColmunType";
 
 const Columns: ColumnDef<ProductColumnType>[] = [
-  // {
-  //   accessorKey: "titleEn",
-  //   header: "TitleEn",
-  // },
   {
     accessorKey: "titleEn",
     header: "TitleEn",
+  },
+
+  {
+    accessorKey: "titleAr",
+    header: "TitleAr",
   },
 
   {
@@ -38,7 +39,7 @@ const Columns: ColumnDef<ProductColumnType>[] = [
     header: "Price",
   },
   {
-    accessorKey: "category",
+    accessorKey: "categories",
     header: "Category",
   },
 

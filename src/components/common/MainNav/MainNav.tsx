@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import {
   IoBagCheckOutline,
+  IoGitBranchOutline,
   IoImageOutline,
   IoListOutline,
   IoPricetagsOutline,
@@ -77,7 +78,7 @@ const MainNav = ({
       id: 5,
       href: "/home/branches",
       label: "Branches",
-      icon: <IoListOutline />,
+      icon: <IoGitBranchOutline />,
     },
     {
       id: 6,

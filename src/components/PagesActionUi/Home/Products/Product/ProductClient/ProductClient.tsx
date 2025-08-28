@@ -9,7 +9,6 @@ import ProductColumnType from "@/types/ProductColmunType";
 import Heading from "@/components/common/Heading/Heading";
 import { useRouter } from "@/i18n/routing";
 
-
 interface ProductClientProps {
   data: ProductColumnType[];
 }
@@ -36,7 +35,7 @@ const ProductClient: React.FC<ProductClientProps> = ({ data }) => {
       <Separator className="bg-slate-300" />
 
       <DataTable columns={Columns} data={data} searchKey="titleEn" />
-{/* 
+      {/* 
       <Heading title="API" description="API calls for products" />
       <Separator className="bg-slate-300" />
 

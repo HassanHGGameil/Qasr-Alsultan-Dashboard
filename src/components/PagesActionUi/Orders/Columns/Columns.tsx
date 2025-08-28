@@ -1,9 +1,8 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { CheckCircle, Clock, Truck, PackageCheck, XCircle, Undo2, Sparkles } from "lucide-react";
+import {  Clock, Truck, PackageCheck, XCircle, Undo2, Sparkles } from "lucide-react";
 import CellActon from "../CellAction/cell-action";
-import { FcEmptyTrash } from "react-icons/fc";
 import OrderColumnType from "@/types/OrderColumnType";
 import { Badge } from "@/components/ui/badge";
 
@@ -72,10 +71,7 @@ const Columns: ColumnDef<OrderColumnType>[] = [
     accessorKey: "phone",
     header: "Phone",
   },
-  {
-    accessorKey: "address",
-    header: "Address",
-  },
+
   {
     accessorKey: "totalPrice",
     header: "Total Price",
@@ -94,20 +90,44 @@ const Columns: ColumnDef<OrderColumnType>[] = [
       );
     },
   },
+  // {
+  //   accessorKey: "isPaid",
+  //   header: "Payment Status",
+  //   cell: ({ row }) => (
+  //     <div className="flex items-center gap-1">
+  //       {row.original.isPaid ? (
+  //         <CheckCircle className="text-green-500" size={18} />
+  //       ) : (
+  //         <FcEmptyTrash size={18} />
+  //       )}
+  //       {row.original.isPaid ? "Paid" : "Unpaid"}
+  //     </div>
+  //   ),
+  // },
+
   {
-    accessorKey: "isPaid",
-    header: "Payment Status",
-    cell: ({ row }) => (
-      <div className="flex items-center gap-1">
-        {row.original.isPaid ? (
-          <CheckCircle className="text-green-500" size={18} />
-        ) : (
-          <FcEmptyTrash size={18} />
-        )}
-        {row.original.isPaid ? "Paid" : "Unpaid"}
-      </div>
-    ),
+  accessorKey: "branch",
+  header: "Branch",
+  cell: ({ row }) => {
+    const branch = row.original.branch;
+
+    if (branch) {
+      return (
+        <span className="px-2 py-1 rounded-md bg-green-100 text-green-700 font-medium">
+          {branch}
+        </span>
+      );
+    }
+
+    return (
+      <span className="px-2 py-1 rounded-md bg-blue-100 text-green-700 font-medium">
+        Cash On Delivery
+      </span>
+    );
   },
+},
+
+
   {
     accessorKey: "createdAt",
     header: "Date",
