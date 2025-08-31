@@ -1,15 +1,14 @@
 "use client";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "@/i18n/routing";
-// Components
 import AlertModal from "@/components/Modals/alert-modal";
 import Heading from "@/components/common/Heading/Heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
-import { Badge } from "@/components/ui/badge";
+import { Play, Pause, CheckCircle, Clock, DollarSign } from "lucide-react";
 
 import OrderColumnType from "@/types/OrderColumnType";
 import { DOMAIN } from "@/lib/constains/constains";
@@ -25,115 +24,121 @@ const OrderClient: React.FC<OrderClientProps> = ({ data }) => {
   const [open, setOpen] = useState(false);
   const [orders, setOrders] = useState<OrderColumnType[]>(data);
   const [isConnected, setIsConnected] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+
+  // ✅ Restore liveEnabled directly from localStorage (no flicker on reload)
+  const [liveEnabled, setLiveEnabled] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("liveEnabled") === "true";
+    }
+    return false;
+  });
+
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState<string | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
 
-  // Calculate order statistics
+  // Mark hydrated (prevents SSR mismatch)
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  // Persist liveEnabled to localStorage
+  useEffect(() => {
+    if (isHydrated) {
+      localStorage.setItem("liveEnabled", String(liveEnabled));
+    }
+  }, [liveEnabled, isHydrated]);
+
   const { totalOrders, pendingOrders, completedOrders, paidOrders } =
     useMemo(() => {
       return {
-        totalOrders: data.length,
-        pendingOrders: data.filter((order) => order.status === "PENDING")
-          .length,
-        completedOrders: data.filter((order) => order.status === "DELIVERED")
-          .length,
-        paidOrders: data.filter((order) => order.isPaid).length,
+        totalOrders: orders.length,
+        pendingOrders: orders.filter((o) => o.status === "PENDING").length,
+        completedOrders: orders.filter((o) => o.status === "DELIVERED").length,
+        paidOrders: orders.filter((o) => o.isPaid).length,
       };
-    }, [data]);
+    }, [orders]);
 
   const DeleteAll = async () => {
     try {
       setLoading(true);
       await axios.delete(`${DOMAIN}/api/orders`);
+      setOrders([]);
+      setLastUpdate(new Date().toLocaleTimeString());
       router.refresh();
-      router.push(`/orders`);
       toast.success("Orders Deleted.");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      toast.error(
-        "Make sure you removed all Orders using this category first."
-      );
+    } catch {
+      toast.error("Error deleting orders");
     } finally {
       setLoading(false);
       setOpen(false);
     }
   };
 
-  useEffect(() => {
-    setOrders(data);
-    setLastUpdate(new Date());
-  }, [data]);
-
-  useEffect(() => {
-    // Connect to Server-Sent Events for real-time order updates
-    const eventSource = new EventSource("/api/socket/io");
+  // SSE connect
+  const connectSSE = useCallback(() => {
+    if (eventSourceRef.current) return;
+    const eventSource = new EventSource(`${DOMAIN}/api/socket/io`);
     eventSourceRef.current = eventSource;
 
     eventSource.onopen = () => {
-      console.log("Connected to SSE server");
       setIsConnected(true);
-      toast.success("Connected to live order updates");
+      toast.success("Live updates connected", { id: "sse-status" });
     };
 
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-
         switch (data.type) {
-          case "connected":
-            console.log("Server confirmation:", data.message);
-            break;
-
           case "newOrder":
-            console.log("New order received:", data.data);
             setOrders((prev) => [data.data, ...prev]);
-            setLastUpdate(new Date());
-            toast.success(
-              `New order received from ${data.data.name || data.data.phone}!`,
-              {
-                duration: 4000,
-                icon: "🛍️",
-              }
-            );
             break;
-
           case "orderUpdate":
-            console.log("Order updated:", data.data);
             setOrders((prev) =>
               prev.map((o) => (o.id === data.data.id ? data.data : o))
             );
-            setLastUpdate(new Date());
-            toast.success("Order updated!");
             break;
-
           case "orderDelete":
-            console.log("Order deleted:", data.data.id);
             setOrders((prev) => prev.filter((o) => o.id !== data.data.id));
-            setLastUpdate(new Date());
-            toast.success("Order deleted!");
             break;
-
-          case "ping":
-            break;
-
-          default:
-            console.log("Unknown SSE message type:", data.type);
         }
-      } catch (error) {
-        console.error("Error parsing SSE message:", error);
+        setLastUpdate(new Date().toLocaleTimeString());
+      } catch (err) {
+        console.error("SSE parse error:", err);
       }
     };
 
-    eventSource.onerror = (error) => {
-      console.error("SSE connection error:", error);
+    eventSource.onerror = () => {
       setIsConnected(false);
-      toast.error("Disconnected from live updates");
-    };
-
-    return () => {
+      toast.error("Live updates disconnected", { id: "sse-status" });
       eventSource.close();
+      eventSourceRef.current = null;
+
+      if (liveEnabled) {
+        setTimeout(() => connectSSE(), 3000);
+      }
     };
+  }, [liveEnabled]);
+
+  const disconnectSSE = useCallback(() => {
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
+      setIsConnected(false);
+      toast("⏸️ Live updates stopped", { id: "sse-status" });
+    }
   }, []);
+
+  // Start/stop based on liveEnabled
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (liveEnabled) connectSSE();
+    else disconnectSSE();
+  }, [liveEnabled, connectSSE, disconnectSSE, isHydrated]);
+
+  // ⛔ Don’t render UI until hydrated
+
+  if (!isHydrated) return null;
 
   return (
     <>
@@ -144,56 +149,85 @@ const OrderClient: React.FC<OrderClientProps> = ({ data }) => {
         loading={loading}
       />
 
-      <div className="flex items-center justify-between mb-6 ">
+      <div className="flex items-center justify-between mb-6">
         <Heading
           title={`Orders (${totalOrders})`}
           description="Manage orders for your store"
         />
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div
-              className={`w-3 h-3 rounded-full ${
+          <div
+            className={`px-3 py-1 rounded-full text-sm flex items-center gap-2 ${
+              isConnected
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            <span
+              className={`w-2 h-2 rounded-full ${
                 isConnected ? "bg-green-500" : "bg-red-500"
               }`}
-              aria-label={isConnected ? "Connected" : "Disconnected"}
             />
-            <span className="text-sm text-gray-600">
-              {isConnected ? "Live" : "Offline"}
-            </span>
-            {lastUpdate && (
-              <span className="text-xs text-gray-500">
-                Last update: {lastUpdate.toLocaleTimeString()}
-              </span>
-            )}
+            {isConnected ? "Live Updates On" : "Live Updates Off"}
           </div>
 
+          {lastUpdate && (
+            <span className="text-xs text-gray-500 italic">⏱ {lastUpdate}</span>
+          )}
+
           <Button
-            className="bg-red-600 text-white hover:bg-red-800"
-            onClick={() => setOpen(true)}
-            disabled={loading}
-            aria-label="Delete all orders"
+            onClick={() => setLiveEnabled((prev) => !prev)}
+            className={`flex items-center gap-2 rounded-xl shadow px-4 ${
+              liveEnabled
+                ? "bg-green-600 hover:bg-green-700 text-white"
+                : "bg-red-600 hover:bg-red-700 text-white"
+            }`}
           >
-            {loading ? "Deleting..." : "Delete All"}
+            {liveEnabled ? <Pause size={16} /> : <Play size={16} />}
+            {liveEnabled ? "Stop Live" : "Start Live"}
           </Button>
+
+          {/* <Button className="bg-red-500 hover:bg-red-600 text-white flex items-center gap-2 rounded-xl shadow" onClick={() => setOpen(true)} disabled={loading}>
+            <Trash size={16} />
+            {loading ? "Deleting..." : "Delete All"}
+          </Button> */}
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+        <div className="p-2 rounded-2xl shadow-sm bg-white border flex flex-col items-center space-y-3">
+          <div className="p-3 bg-yellow-100 rounded-full">
+            <Clock className="w-6 h-6 text-yellow-600" />
+          </div>
+          <span className="text-3xl font-extrabold text-yellow-600">
+            {pendingOrders}
+          </span>
+          <span className="text-sm text-gray-600">Pending Orders</span>
+        </div>
+
+        <div className="p-2 rounded-2xl shadow-sm bg-white border flex flex-col items-center space-y-3">
+          <div className="p-3 bg-green-100 rounded-full">
+            <CheckCircle className="w-6 h-6 text-green-600" />
+          </div>
+          <span className="text-3xl font-extrabold text-green-600">
+            {completedOrders}
+          </span>
+          <span className="text-sm text-gray-600">Completed Orders</span>
+        </div>
+
+        <div className="p-2 rounded-2xl shadow-sm bg-white border flex flex-col items-center space-y-3">
+          <div className="p-3 bg-blue-100 rounded-full">
+            <DollarSign className="w-6 h-6 text-blue-600" />
+          </div>
+          <span className="text-3xl font-extrabold text-blue-600">
+            {paidOrders}
+          </span>
+          <span className="text-sm text-gray-600">Paid Orders</span>
         </div>
       </div>
 
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Order Management</h3>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs">
-              {pendingOrders} Pending
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              {completedOrders} Completed
-            </Badge>
-            <Badge variant="outline" className="text-xs">
-              {paidOrders} Paid
-            </Badge>
-          </div>
-        </div>
         <DataTable columns={Columns} data={orders} searchKey="user" />
       </div>
 

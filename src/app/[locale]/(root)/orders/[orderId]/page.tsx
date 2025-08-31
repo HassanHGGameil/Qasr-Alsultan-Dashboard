@@ -83,7 +83,7 @@ const OrderDetailsPage = async ({ params }: PageProps) => {
       products: order.orderItem.map((item) => ({
         id: item.id,
         productId: item.productId,
-        name: item.product?.titleEn || "Unknown Product",
+        name: item.product?.titleAr || "Unknown Product",
         quantity: Number(item.quantity) || 0, // Ensure this is always a number
         price: item.product?.price ?? 0,
         image: item.product?.images?.[0]?.url,

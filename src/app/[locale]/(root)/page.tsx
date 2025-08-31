@@ -5,16 +5,16 @@ import {
   CreditCard,
   DollarSign,
   Package,
-  PackageMinus,
   Users,
 } from "lucide-react";
 import { formater } from "@/lib/utils/utils";
 import { getTotalRevenue } from "@/lib/Actions/getTotalRevenue";
 import { getSalesCount } from "@/lib/Actions/getSalesCount";
 import { getStockCount } from "@/lib/Actions/getStockCount";
-// import { getGraphRevenue } from "@/lib/Actions/getGraphRevenue";
+import { getGraphRevenue } from "@/lib/Actions/getGraphRevenue";
 import { getAllUsersCount } from "@/lib/Actions/getAllUsers";
 import getCurrentUser from "@/actions/getCurrentUser";
+import Overview from "@/components/PagesActionUi/Overview/Overview";
 // import Overview from "@/components/PagesActionUi/Overview/Overview";
 
 const DashboardPage = async () => {
@@ -23,7 +23,7 @@ const DashboardPage = async () => {
   const stockCount = await getStockCount();
   const userCountInApp = await getAllUsersCount();
 
-  // const graphRevenue = await getGraphRevenue();
+  const graphRevenue = await getGraphRevenue();
 
   const currentUser = await getCurrentUser();
 
@@ -33,7 +33,7 @@ const DashboardPage = async () => {
     <section className="container flex-col">
       <div className="flex-1 space-y-4 p-8 pt-6">
         <Heading
-          title="Mansour Overview"
+          title="Qasr Al-Sultan Overview"
           description="Overview of your store"
         />
       </div>
@@ -73,7 +73,7 @@ const DashboardPage = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 ">
                 <CardTitle className="text-sm font-medium ">
-                  Product In Stock
+                  Products
                 </CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
@@ -83,20 +83,7 @@ const DashboardPage = async () => {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 ">
-                <CardTitle className="text-sm font-medium ">
-                  User PKG In Stock
-                </CardTitle>
-
-                <PackageMinus className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-
-              <CardContent>
-                {/* <div className="text-2xl font-bold">+{userPkgStockCount}</div> */}
-              </CardContent>
-            </Card>
-
+            
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 ">
                 <CardTitle className="text-sm font-medium ">
@@ -119,7 +106,7 @@ const DashboardPage = async () => {
 
             <CardContent>
               <div className="pl-2">
-                {/* <Overview data={graphRevenue} /> */}
+                <Overview data={graphRevenue} />
               </div>
             </CardContent>
           </Card>

@@ -1,6 +1,8 @@
-import { Copy, Edit, Trash } from "lucide-react";
+"use client";
+
+import {  Edit, } from "lucide-react";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import axios from "axios";
 import AlertModal from "@/components/Modals/alert-modal";
 import { useRouter } from "@/i18n/routing";
@@ -14,32 +16,34 @@ interface CellActionProps {
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();
-
-  const onCopy = (id: string) => {
-    navigator.clipboard.writeText(id);
-    toast.success("Category Id Copied to the clipboard");
-  };
-
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const onDelete = async () => {
+  // const onCopy = useCallback(async (id: string) => {
+  //   try {
+  //     await navigator.clipboard.writeText(id);
+  //     toast.success("Order ID copied!");
+  //   } catch {
+  //     toast.error("Failed to copy ID.");
+  //   }
+  // }, []);
+
+  const onDelete = useCallback(async () => {
     try {
       setLoading(true);
       await axios.delete(`${DOMAIN}/api/orders/${data.id}`);
       router.refresh();
-      router.push(`/orders`);
-      toast.success("Orders Deleted.");
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
+      toast.success("Order deleted.");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       toast.error(
-        "Make sure you removed all Orders using this category first."
+        error?.response?.data?.message || "Failed to delete. Try again."
       );
     } finally {
       setLoading(false);
       setOpen(false);
     }
-  };
+  }, [data.id, router]);
 
   return (
     <>
@@ -51,33 +55,43 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
       />
 
       <div className="flex items-center space-x-2">
-        <Button
+        {/* Copy */}
+        {/* <Button
           variant="ghost"
           size="icon"
           onClick={() => onCopy(data.id)}
-          title="Copy ID"
+          aria-label="Copy Order ID"
+          className="hover:bg-green-100 hover:text-green-600 transition-colors"
         >
           <Copy className="h-4 w-4" />
-        </Button>
+        </Button> */}
 
+        {/* Edit */}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => router.push(`/orders/${data.id}`)}
-          title="Edit"
+          aria-label="Edit Order"
+          className="hover:bg-blue-100 hover:text-blue-600 transition-colors"
         >
           <Edit className="h-4 w-4" />
         </Button>
 
-        <Button
+        {/* Delete */}
+        {/* <Button
           variant="ghost"
           size="icon"
           onClick={() => setOpen(true)}
-          title="Delete"
-          className="text-red-600 hover:text-red-600"
+          aria-label="Delete Order"
+          className="hover:bg-red-100 hover:text-red-600 transition-colors"
+          disabled={loading}
         >
-          <Trash className="h-4 w-4" />
-        </Button>
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Trash className="h-4 w-4" />
+          )}
+        </Button> */}
       </div>
     </>
   );
