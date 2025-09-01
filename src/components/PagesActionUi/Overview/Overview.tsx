@@ -65,7 +65,7 @@ const Overview: React.FC<OverviewProps> = ({
   return (
     <div className="w-full">
       {/* Card container */}
-      <div className="bg-white rounded-2xl shadow-md p-6">
+      <div className=" ">
         <h2 className="text-lg font-semibold text-gray-800 mb-4">
           Revenue Overview
         </h2>

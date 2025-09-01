@@ -87,6 +87,20 @@ const DashboardPage = async () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 ">
                 <CardTitle className="text-sm font-medium ">
+                  Users In Website
+                </CardTitle>
+
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+
+              <CardContent>
+                <div className="text-2xl font-bold">+{userCountInApp}</div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 ">
+                <CardTitle className="text-sm font-medium ">
                   Users In App
                 </CardTitle>
 
@@ -101,7 +115,7 @@ const DashboardPage = async () => {
 
           <Card className="col-span-4 my-8">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 ">
-              <CardTitle className="text-sm font-medium ">Overview</CardTitle>
+              {/* <CardTitle className="text-sm font-medium ">Overview</CardTitle> */}
             </CardHeader>
 
             <CardContent>

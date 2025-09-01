@@ -1,11 +1,12 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -42,6 +43,7 @@ model User {
   image          String?
   hashedPassword String?
   role           Role        @default(USER) // Added role field
+  userPlatform       UserPlatform?
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt // Fixed naming inconsistency
   phone          String?
@@ -49,6 +51,13 @@ model User {
   sessions       Session[]
   orders         OrderItem[] // Added relation for User to Store
 }
+
+
+enum UserPlatform {
+  WEBSITE
+  MOBILEAPP
+}
+
 
 model VerificationToken {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -198,7 +207,6 @@ model Product {
   offer             Int?
   offerPrice        Int?
   quantity          Int?
-
   isFeatured   Boolean @default(false)
   isBestSeller Boolean @default(false)
   isArchived   Boolean @default(false)
