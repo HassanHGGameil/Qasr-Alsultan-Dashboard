@@ -1,18 +1,14 @@
 import Heading from "@/components/common/Heading/Heading";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  CreditCard,
-  DollarSign,
-  Package,
-  Users,
-} from "lucide-react";
+import { CreditCard, DollarSign, Package, Users } from "lucide-react";
 import { formater } from "@/lib/utils/utils";
 import { getTotalRevenue } from "@/lib/Actions/getTotalRevenue";
 import { getSalesCount } from "@/lib/Actions/getSalesCount";
 import { getStockCount } from "@/lib/Actions/getStockCount";
 import { getGraphRevenue } from "@/lib/Actions/getGraphRevenue";
 import { getAllUsersCount } from "@/lib/Actions/getAllUsers";
+import { getAllUsersFromApp } from "@/lib/Actions/getUsersFromApp";
 import getCurrentUser from "@/actions/getCurrentUser";
 import Overview from "@/components/PagesActionUi/Overview/Overview";
 // import Overview from "@/components/PagesActionUi/Overview/Overview";
@@ -21,13 +17,15 @@ const DashboardPage = async () => {
   const totalRevenue = await getTotalRevenue();
   const salesCount = await getSalesCount();
   const stockCount = await getStockCount();
-  const userCountInApp = await getAllUsersCount();
+  const allUsersCount = await getAllUsersCount();
+  const userCountInApp = await getAllUsersFromApp();
 
   const graphRevenue = await getGraphRevenue();
 
   const currentUser = await getCurrentUser();
 
-  const isManger = currentUser?.role === "OWNER" || currentUser?.role === "MANAGER";
+  const isManger =
+    currentUser?.role === "OWNER" || currentUser?.role === "MANAGER";
 
   return (
     <section className="container flex-col">
@@ -72,9 +70,7 @@ const DashboardPage = async () => {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 ">
-                <CardTitle className="text-sm font-medium ">
-                  Products
-                </CardTitle>
+                <CardTitle className="text-sm font-medium ">Products</CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
 
@@ -83,7 +79,6 @@ const DashboardPage = async () => {
               </CardContent>
             </Card>
 
-            
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 ">
                 <CardTitle className="text-sm font-medium ">
@@ -94,7 +89,7 @@ const DashboardPage = async () => {
               </CardHeader>
 
               <CardContent>
-                <div className="text-2xl font-bold">+{userCountInApp}</div>
+                <div className="text-2xl font-bold">+{allUsersCount}</div>
               </CardContent>
             </Card>
 
