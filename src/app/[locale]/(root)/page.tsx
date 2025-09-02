@@ -30,13 +30,13 @@ const DashboardPage = async () => {
 
   return (
     <section className="container flex-col">
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex-1 space-y-2  pt-6">
         <Heading
           title="Qasr Al-Sultan Overview"
           description="Overview of your store"
         />
       </div>
-      <Separator />
+      {/* <Separator /> */}
 
       {isManger ? (
         <>

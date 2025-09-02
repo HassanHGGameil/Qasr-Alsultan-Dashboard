@@ -7,8 +7,6 @@ import Heading from "@/components/common/Heading/Heading";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
-// import ApiList from "@/components/ui/api-list";
-
 
 interface UserClientProps {
   data: UserColumnType[];
@@ -16,8 +14,6 @@ interface UserClientProps {
 
 const UsersClient: React.FC<UserClientProps> = ({ data }) => {
   const router = useRouter();
-
-  
 
   return (
     <>
@@ -37,27 +33,9 @@ const UsersClient: React.FC<UserClientProps> = ({ data }) => {
       </div>
       <Separator className="bg-slate-300" />
 
-      <DataTable 
-        columns={Columns} 
-        data={data} 
-        searchKey="name"
-        
-      />
+      <DataTable columns={Columns} data={data} searchKey="name" />
 
-
-      {/* <Heading  
-        title="API"
-        description="API calls for Banner"
-        
-      />
-      <Separator className="bg-slate-300" />
-
-      <ApiList
-        entityName="users"
-        entityIdName="userId"
-      /> */}
-
-
+     
     </>
   );
 };

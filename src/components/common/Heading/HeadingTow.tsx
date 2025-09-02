@@ -9,7 +9,7 @@ const HeadingTwo: React.FC<IHeadingProps> = ({ title, description }) => {
     <div className="flex items-center gap-4">
      
       <div className="">
-        <h2 className="text-xl font-bold tracking-wide">{title}</h2>
+        <h2 className="text-lg font-bold tracking-wide">{title}</h2>
         <p className="text-sm">{description}</p>
       </div>
     </div>

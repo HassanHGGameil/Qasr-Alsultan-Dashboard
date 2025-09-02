@@ -121,10 +121,11 @@ const SignUpForm = () => {
         name: data.name,
         email: data.email,
         phone: data.phone,
+        userPlatform: "DASHBOARD",
+
         password: data.password
       });
 
-      // Automatically sign in after registration
       const signInResult = await signIn('credentials', {
         email: data.email,
         password: data.password,

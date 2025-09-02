@@ -22,6 +22,7 @@ const UsersPage = async () => {
     name: item.name,
     email: item.email,
     role: item.role,
+    userPlatform: item.userPlatform,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
   }));
 
