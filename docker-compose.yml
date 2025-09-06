@@ -13,6 +13,8 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+    ports:
+      - "3000:3000"  # Fixed: added space after -
     networks:
       - qasr-alsultan-dashboard
     depends_on:
@@ -49,22 +51,9 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - ./certbot/www:/var/www/certbot
+      - webroot:/usr/share/nginx/html:ro  # Added webroot volume usage
     depends_on:
       - nextjs-app
-    networks:
-      - qasr-alsultan-dashboard
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: sh -c "trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;"
     networks:
       - qasr-alsultan-dashboard
 
@@ -74,5 +63,4 @@ networks:
 
 volumes:
   mongo_data:
-  certbot-etc:
-  certbot-var:
+  webroot:
