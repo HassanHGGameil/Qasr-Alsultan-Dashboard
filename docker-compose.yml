@@ -1,15 +1,20 @@
+version: '3.8'
+
 services:
   nextjs-app:
     build: 
       context: .
       dockerfile: Dockerfile
-    expose:             # expose only to nginx, not public
+    expose:
       - "3000"
     environment:
       - NODE_ENV=${NODE_ENV}
+      - PORT=3000
       - DATABASE_URL=${DATABASE_URL}
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+    ports:
+      - "3000:3000"  # Fixed: added space after -
     networks:
       - qasr-alsultan-dashboard
     depends_on:
@@ -32,7 +37,7 @@ services:
     ports:
       - "27017:27017"
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
       interval: 30s
       timeout: 10s
       retries: 5
@@ -46,6 +51,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - webroot:/usr/share/nginx/html:ro  # Added webroot volume usage
     depends_on:
       - nextjs-app
     networks:
