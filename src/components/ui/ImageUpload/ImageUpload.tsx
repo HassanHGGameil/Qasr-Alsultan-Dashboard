@@ -47,6 +47,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
 
   if (!isMounted) return null;
 
+  const PLACEHOLDER_IMAGE = "/placeholder-product.jpg";
+
+
   return (
     <div>
       <div className="mb-4 flex items-center flex-wrap gap-4">
@@ -66,7 +69,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 <Trash className="h-4 w-4" />
               </Button>
             </div>
-            <Image fill className="object-cover" alt="Image" src={url} />
+            <Image
+              src={url || PLACEHOLDER_IMAGE}
+              alt={"Image"}
+              fill
+              className="object-cover"
+              sizes="64px"
+              priority={false}
+            />
           </div>
         ))}
       </div>
