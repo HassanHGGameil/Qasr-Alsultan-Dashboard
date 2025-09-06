@@ -1,19 +1,18 @@
-# Use Node.js LTS version
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
-# Install dependencies only when needed
+# Dependencies stage
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy package files
+# Copy only package files
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies
-RUN npm ci --only=production
+# Install ALL deps (needed for build)
+RUN npm ci
 
-# Rebuild the source code only when needed
+# Build stage
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
@@ -22,40 +21,33 @@ COPY . .
 # Generate Prisma client
 RUN npx prisma generate
 
-# Build the application
+# Build Next.js standalone
 RUN npm run build
 
-# Production image, copy all the files and run next
+# Production stage
 FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Add system libs required by Prisma
+RUN apk add --no-cache openssl
+
 # Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs \
+  && adduser --system --uid 1001 nextjs
 
-
-# Copy necessary files
+# Copy files from builder
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
-
-# Automatically leverage output traces to reduce image size
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Copy Prisma files
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules ./node_modules
 
-
-# Switch to non-root user
 USER nextjs
 
 EXPOSE 3000
-
-# ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Start the application
+# Run Next.js standalone server
 CMD ["node", "server.js"]
