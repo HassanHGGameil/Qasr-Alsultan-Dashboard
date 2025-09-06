@@ -85,7 +85,6 @@ export async function GET(req: NextRequest) {
     // Fetch products
     const products = await prismadb.product.findMany({
       where: {
-        
         categoriesId,
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
@@ -99,8 +98,8 @@ export async function GET(req: NextRequest) {
         categories: true,
         productAddtions: {
           include: {
-            productItem: true
-          }
+            productItem: true,
+          },
         },
       },
       orderBy: {

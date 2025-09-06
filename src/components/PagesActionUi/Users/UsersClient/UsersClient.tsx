@@ -1,10 +1,7 @@
 "use client";
-import { Plus } from "lucide-react";
 import Columns from "../Columns/Columns";
 import UserColumnType from "@/types/UserColumnType";
-import { useRouter } from "@/i18n/routing";
 import Heading from "@/components/common/Heading/Heading";
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/ui/data-table";
 
@@ -13,7 +10,6 @@ interface UserClientProps {
 }
 
 const UsersClient: React.FC<UserClientProps> = ({ data }) => {
-  const router = useRouter();
 
   return (
     <>
@@ -23,13 +19,13 @@ const UsersClient: React.FC<UserClientProps> = ({ data }) => {
           description="Mange Users for your store "
         />
 
-        <Button
+        {/* <Button
           className="bg-green-400"
           onClick={() => router.push(`/users/new `)}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add New
-        </Button>
+        </Button> */}
       </div>
       <Separator className="bg-slate-300" />
 

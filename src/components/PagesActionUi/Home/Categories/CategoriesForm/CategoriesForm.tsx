@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +28,6 @@ import Heading from "@/components/common/Heading/Heading";
 import { useRouter } from "@/i18n/routing";
 import { useParams } from "next/navigation";
 
-
 type CategoryFormValues = z.infer<typeof createProductCategorySchema>;
 
 interface CategoryFormProps {
@@ -35,70 +35,66 @@ interface CategoryFormProps {
 }
 
 const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
-  const params = useParams() as { categoriesId: string };
-  const router = useRouter();
+  const params = useParams();
+  const categoryId = params?.categoriesId as string | undefined;
 
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit Category" : "Created Category";
+  const title = initialData ? "Edit Category" : "Create Category";
   const description = initialData ? "Edit a Category" : "Add a New Category";
   const toastMessage = initialData ? "Category Updated" : "Category Created";
-  const action = initialData ? "Save changes" : "Created Category";
+  const action = initialData ? "Save changes" : "Create Category";
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(createProductCategorySchema),
-    defaultValues: initialData || {
-      nameEn: "",
-      nameAr: "",
-      imageUrl: "",
-    },
+    defaultValues: initialData
+      ? {
+          nameEn: initialData.nameEn,
+          nameAr: initialData.nameAr,
+          imageUrl: initialData.imageUrl,
+        }
+      : {
+          nameEn: "",
+          nameAr: "",
+          imageUrl: "",
+        },
   });
 
   const onSubmit = async (data: CategoryFormValues) => {
     try {
       setLoading(true);
 
-      if (initialData) {
-        const response = await axios.patch(
-          `${DOMAIN}/api/home/categories/${params.categoriesId}`,
-          data
-        );
-        console.log("Update Response:", response.data);
+      if (initialData && categoryId) {
+        await axios.patch(`${DOMAIN}/api/home/categories/${categoryId}`, data);
       } else {
-        const response = await axios.post(
-          `${DOMAIN}/api/home/categories`,
-          data
-        );
-        console.log("Create Response:", response.data);
+        await axios.post(`${DOMAIN}/api/home/categories`, data);
       }
 
       toast.success(toastMessage);
       router.push(`/home/categories`);
       router.refresh();
-
     } catch (error) {
       toast.error(axiosErrorHandler(error) || "Something went wrong");
-      axiosErrorHandler(error);
     } finally {
       setLoading(false);
     }
   };
 
-  //______ Delete Store  __________
   const onDelete = async () => {
+    if (!categoryId) return;
     try {
       setLoading(true);
-      await axios.delete(
-      `${DOMAIN}/api/home/categories/${params.categoriesId}`,
-      );
+      await axios.delete(`${DOMAIN}/api/home/categories/${categoryId}`);
       router.push(`/home/categories`);
       toast.success("Category Deleted.");
       router.refresh();
-      } catch (error) {
-      toast.error(axiosErrorHandler(error) || "Make sure you removed all products and categories usning this category first.");
-       axiosErrorHandler(error);
-    
+    } catch (error) {
+      toast.error(
+        axiosErrorHandler(error) ||
+          "Make sure you removed all products using this category first."
+      );
     } finally {
       setLoading(false);
       setOpen(false);
@@ -116,7 +112,6 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
 
       <div className="flex items-center justify-between w-full">
         <Heading title={title} description={description} />
-
         {initialData && (
           <Button
             disabled={loading}
@@ -125,7 +120,7 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
             size="icon"
             onClick={() => setOpen(true)}
           >
-            <Trash className="h-4 w-4 " />
+            <Trash className="h-4 w-4" />
           </Button>
         )}
       </div>
@@ -134,7 +129,7 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className=" space-y-8 w-full"
+          className="space-y-8 w-full"
         >
           <div className="grid grid-cols-3 gap-8">
             <FormField
@@ -147,7 +142,7 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                     <Input
                       disabled={loading}
                       placeholder="Category Name-En"
-                      className=" placeholder:text-gray-500"
+                      className="placeholder:text-gray-500"
                       {...field}
                     />
                   </FormControl>
@@ -155,7 +150,6 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="nameAr"
@@ -166,7 +160,7 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
                     <Input
                       disabled={loading}
                       placeholder="Category Name-Ar"
-                      className=" placeholder:text-gray-500"
+                      className="placeholder:text-gray-500"
                       {...field}
                     />
                   </FormControl>

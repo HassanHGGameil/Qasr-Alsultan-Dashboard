@@ -1,12 +1,11 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
-
-
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -36,29 +35,27 @@ model Session {
 }
 
 model User {
-  id             String      @id @default(auto()) @map("_id") @db.ObjectId
+  id             String        @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
-  email          String?     @unique
+  email          String?       @unique
   emailVerified  DateTime?
   image          String?
   hashedPassword String?
-  role           Role        @default(USER) // Added role field
-  userPlatform       UserPlatform?
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt // Fixed naming inconsistency
+  role           Role          @default(USER) // Added role field
+  userPlatform   UserPlatform?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt // Fixed naming inconsistency
   phone          String?
   accounts       Account[]
   sessions       Session[]
   orders         OrderItem[] // Added relation for User to Store
 }
 
-
 enum UserPlatform {
   WEBSITE
   MOBILEAPP
   DASHBOARD
 }
-
 
 model VerificationToken {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -146,7 +143,6 @@ model Branches {
   titleAr  String
   imageUrl String
 
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -208,9 +204,9 @@ model Product {
   offer             Int?
   offerPrice        Int?
   quantity          Int?
-  isFeatured   Boolean @default(false)
-  isBestSeller Boolean @default(false)
-  isArchived   Boolean @default(false)
+  isFeatured        Boolean          @default(false)
+  isBestSeller      Boolean          @default(false)
+  isArchived        Boolean          @default(false)
 
   images Images[]
 
@@ -262,9 +258,7 @@ model Order {
   address String @default("")
   zipCode String @default("")
   city    String @default("")
-  branch    String @default("")
-
-  
+  branch  String @default("")
 
   orderItem OrderItem[]
   createdAt DateTime    @default(now())

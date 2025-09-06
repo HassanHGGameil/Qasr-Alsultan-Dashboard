@@ -59,9 +59,14 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
         </Button>
 
         <Button
+         
+
           variant="ghost"
           size="icon"
           onClick={() => router.push(`/home/categories/${data.id}`)}
+          aria-label="Edit Order"
+          className="hover:bg-blue-100 hover:text-blue-600 transition-colors"
+
           title="Edit"
         >
           <Edit className="h-4 w-4" />

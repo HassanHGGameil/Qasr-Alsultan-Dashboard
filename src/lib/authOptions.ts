@@ -89,7 +89,7 @@ export const authOptions: NextAuthOptions = {
   //   },
   // },
 
-  // // Cookies configuration for cross-device compatibility
+  // Cookies configuration for cross-device compatibility
   // cookies: {
   //   sessionToken: {
   //     name: `__Secure-next-auth.session-token`,

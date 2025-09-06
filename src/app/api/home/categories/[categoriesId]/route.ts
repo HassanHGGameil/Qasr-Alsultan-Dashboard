@@ -28,8 +28,7 @@ export async function GET(req: NextRequest, { params }: PageProps) {
     const product = await prismadb.categories.findUnique({
       where: {
         id: (await params).categoriesId,
-        slugEn: (await params).slug,
-        slugAr: (await params).slug,
+        
       },
     });
 

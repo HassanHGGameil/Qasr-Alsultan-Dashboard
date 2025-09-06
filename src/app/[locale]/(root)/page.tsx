@@ -14,6 +14,7 @@ import getCurrentUser from "@/actions/getCurrentUser";
 import Overview from "@/components/PagesActionUi/Overview/Overview";
 import { CiLaptop, CiMobile1 } from "react-icons/ci";
 import HeadingTwo from "@/components/common/Heading/HeadingTow";
+import { getAllAdmin } from "@/lib/Actions/getAllAdmin";
 
 const DashboardPage = async () => {
   const totalRevenue = await getTotalRevenue();
@@ -21,6 +22,7 @@ const DashboardPage = async () => {
   const stockCount = await getStockCount();
   const allUsersCount = await getAllUsersCount();
   const userCountInApp = await getAllUsersFromApp();
+  const AllAdmin = await getAllAdmin();
   const userCountInWebsite = await getAllUsersFromWebsite();
   const graphRevenue = await getGraphRevenue();
   const currentUser = await getCurrentUser();
@@ -29,7 +31,7 @@ const DashboardPage = async () => {
     currentUser?.role === "OWNER" || currentUser?.role === "MANAGER";
 
   return (
-    <section className="container flex-col">
+    <section className="container w-full">
       <div className="flex-1 space-y-2  pt-6">
         <Heading
           title="Qasr Al-Sultan Overview"
@@ -51,7 +53,9 @@ const DashboardPage = async () => {
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Revenue
+                  </CardTitle>
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -73,7 +77,9 @@ const DashboardPage = async () => {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Products</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Products
+                  </CardTitle>
                   <Package className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -91,10 +97,12 @@ const DashboardPage = async () => {
             />
             <Separator className="my-4" />
 
-            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Total Users
+                  </CardTitle>
                   <Users className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
@@ -104,17 +112,36 @@ const DashboardPage = async () => {
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Website Users</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Admins Dashboard 
+                  </CardTitle>
                   <CiLaptop className="h-5 w-5 text-red-600" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">+{userCountInWebsite}</div>
+                  <div className="text-2xl font-bold">
+                    +{AllAdmin}
+                  </div>
+                </CardContent>
+              </Card>
+ <Card>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Website Users
+                  </CardTitle>
+                  <CiLaptop className="h-5 w-5 text-red-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    +{userCountInWebsite}
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                  <CardTitle className="text-sm font-medium">Mobile Users</CardTitle>
+                  <CardTitle className="text-sm font-medium">
+                    Mobile Users
+                  </CardTitle>
                   <CiMobile1 className="h-5 w-5 text-red-600" />
                 </CardHeader>
                 <CardContent>
@@ -132,7 +159,7 @@ const DashboardPage = async () => {
             />
             <Separator className="my-4" />
 
-            <Card className="col-span-4">
+            <Card className="col-span-4 mb-14">
               <CardContent>
                 <div className="pl-2">
                   <Overview data={graphRevenue} />
