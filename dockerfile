@@ -1,3 +1,4 @@
+# Use Node.js 20 LTS as base
 FROM node:20-alpine AS base
 
 # Dependencies stage
