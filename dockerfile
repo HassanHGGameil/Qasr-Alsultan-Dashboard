@@ -1,54 +1,39 @@
-# Use Node.js 20 LTS as base
-FROM node:20-alpine AS base
+# Stage 1: Build the Next.js application
+FROM node:22-alpine AS builder
 
-# Dependencies stage
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy only package files
-COPY package*.json ./
+# Copy package.json and install dependencies
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit
+
+# Copy the Prisma schema and run `prisma generate`
 COPY prisma ./prisma/
-
-# Install ALL deps (needed for build)
-RUN npm ci
-
-# Build stage
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Generate Prisma client
 RUN npx prisma generate
 
-# Build Next.js standalone
+# Copy the rest of the application code
+COPY . .
+
+# Build the Next.js application for standalone output
 RUN npm run build
 
-# Production stage
-FROM base AS runner
+# Stage 2: Create the production image
+FROM node:22-alpine AS runner
+
 WORKDIR /app
 
-ENV NODE_ENV=production
+# Set the standalone server output
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Add system libs required by Prisma
-RUN apk add --no-cache openssl
-
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs \
-  && adduser --system --uid 1001 nextjs
-
-# Copy files from builder
+# Copy the standalone output and necessary files from the builder stage
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 
-USER nextjs
-
+# Expose the port Next.js runs on
 EXPOSE 3000
-ENV HOSTNAME="0.0.0.0"
 
-# Run Next.js standalone server
+# Start the Next.js server
 CMD ["node", "server.js"]
