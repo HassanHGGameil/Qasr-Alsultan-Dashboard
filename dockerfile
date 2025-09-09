@@ -48,7 +48,7 @@ COPY --from=builder /app/prisma ./prisma
 USER nextjs
 
 EXPOSE 3000
-# ENV HOSTNAME="0.0.0.0"
+ENV HOSTNAME=72.60.80.158
 
 # Run Next.js standalone server
 CMD ["node", "server.js"]
