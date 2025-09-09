@@ -62,8 +62,7 @@ services:
       - webroot:/var/www/html
     entrypoint: /bin/sh
     
-    command: >
-      certbot certonly --webroot --webroot-path=/var/www/html
+    command: certbot certonly --webroot --webroot-path=/var/www/html
       --email hgprand@gmail.com
       --agree-tos --no-eff-email
       --non-interactive --keep-until-expiring
