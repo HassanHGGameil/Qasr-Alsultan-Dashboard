@@ -43,8 +43,9 @@ services:
       retries: 5
 
   nginx:
-    image: nginx:alpine
-    container_name: nginx-proxy
+    image: nginx:stable-alpine
+    container_name: nginx
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
