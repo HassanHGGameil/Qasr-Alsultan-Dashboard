@@ -25,8 +25,6 @@ RUN npx prisma generate
 # Build Next.js standalone
 RUN npm run build
 
-# certbot updated
-RUN apt-get update -y && apt-get install -y certbot
 # Production stage
 FROM base AS runner
 WORKDIR /app
