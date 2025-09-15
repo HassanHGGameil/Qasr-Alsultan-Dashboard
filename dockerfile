@@ -1,54 +1,65 @@
 # Use Node.js 20 LTS as base
 FROM node:20-alpine AS base
 
-# Dependencies stage
+# ------------------------------
+# 1. Dependencies stage
+# ------------------------------
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
-# Copy only package files
+# Copy only package files and Prisma schema
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install ALL deps (needed for build)
+# Install ALL deps (prod + dev)
 RUN npm ci
 
-# Build stage
+# ------------------------------
+# 2. Builder stage
+# ------------------------------
 FROM base AS builder
 WORKDIR /app
+
+# Copy node_modules from deps
 COPY --from=deps /app/node_modules ./node_modules
+
+# Copy rest of project
 COPY . .
 
 # Generate Prisma client
 RUN npx prisma generate
 
-# Build Next.js standalone
+# Build Next.js app in standalone mode
 RUN npm run build
 
-# Production stage
+# ------------------------------
+# 3. Production runner stage
+# ------------------------------
 FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV PORT=3000
 
-# Add system libs required by Prisma
-RUN apk add --no-cache openssl
-
-# Create a non-root user
+# Create non-root user
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
-# Copy files from builder
+# Copy build artifacts
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
+
+# Ensure Prisma runtime is present
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
 USER nextjs
 
 EXPOSE 3000
-ENV HOSTNAME="0.0.0.0"
 
-# Run Next.js standalone server
+# ✅ Entry point for Next.js standalone
 CMD ["node", "server.js"]

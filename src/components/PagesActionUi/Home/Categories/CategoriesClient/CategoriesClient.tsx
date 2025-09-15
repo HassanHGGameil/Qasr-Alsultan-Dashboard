@@ -27,7 +27,7 @@ const CategoriesClient: React.FC<CategoryClientProps> = ({ data }) => {
     <>
       <div className="flex items-center justify-between ">
         <Heading
-          title={`Categories (${data.length})`}
+          title={`Categories Testing (${data.length})`}
           description="Mange Categories for your store "
         />
 

@@ -19,27 +19,29 @@ type PageProps = {
   params: Promise<{ slug?: string; categoriesId: string }>;
 };
 
+
 export async function GET(req: NextRequest, { params }: PageProps) {
+  const headers = CorsHandler(req);
+
   try {
-    if (!(await params).slug) {
-      return new NextResponse("ProductId is required", { status: 400 });
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+      return new NextResponse("Unauthorized", { status: 401, headers });
     }
 
-    const product = await prismadb.categories.findUnique({
-      where: {
-        id: (await params).categoriesId,
-        
-      },
+    const categories = await prismadb.categories.findUnique({
+      where: { id: (await params).categoriesId },
+      
     });
 
-    if (!product) {
-      return new NextResponse("Product not found", { status: 404 });
+    if (!categories) {
+      return new NextResponse("categories not found", { status: 404, headers });
     }
 
-    const headers = CorsHandler(req);
-    return NextResponse.json(product, { status: 200, headers });
+    return NextResponse.json(categories, { status: 200, headers });
   } catch (error) {
-    axiosErrorHandler(error);
+    console.error("[ORDER_GET_ERROR]:", error);
+    return new NextResponse("Internal Server Error", { status: 500, headers });
   }
 }
 

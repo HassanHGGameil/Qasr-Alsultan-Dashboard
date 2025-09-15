@@ -1,19 +1,23 @@
+version: "3.9"
 
 services:
   nextjs-app:
     build: 
       context: .
       dockerfile: Dockerfile
+    command: ["node", "server.js"]
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      PORT: 3000
+      DATABASE_URL: ${DATABASE_URL}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ${NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
     expose:
       - "3000"
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - PORT=3000
-      - DATABASE_URL=${DATABASE_URL}
-      - NEXTAUTH_URL=${NEXTAUTH_URL}
-      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-    ports:
-      - "3000:3000"  # Fixed: added space after -
     networks:
       - qasr-alsultan-dashboard
     depends_on:
@@ -50,7 +54,6 @@ services:
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - webroot:/var/www/html
     depends_on:
       - nextjs-app
     networks:
@@ -62,4 +65,3 @@ networks:
 
 volumes:
   mongo_data:
-  webroot:

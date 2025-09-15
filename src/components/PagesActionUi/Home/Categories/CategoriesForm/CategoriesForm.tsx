@@ -19,13 +19,13 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
 import AlertModal from "@/components/Modals/alert-modal";
-import ImageUpload from "@/components/ui/ImageUpload/ImageUpload";
 import { ProductCategory } from "@prisma/client";
 import { createProductCategorySchema } from "@/validations/home/products/productCategory";
 import { axiosErrorHandler } from "@/utils";
 import { DOMAIN } from "@/lib/constains/constains";
 import Heading from "@/components/common/Heading/Heading";
-import { useRouter } from "@/i18n/routing";
+// ⚡ make sure this is correct — you can swap to "next/navigation" if needed
+import { useRouter } from "@/i18n/routing"; 
 import { useParams } from "next/navigation";
 
 type CategoryFormValues = z.infer<typeof createProductCategorySchema>;
@@ -35,8 +35,9 @@ interface CategoryFormProps {
 }
 
 const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
-  const params = useParams();
-  const categoryId = params?.categoriesId as string | undefined;
+  // ✅ Correct Next.js 15 typing for useParams
+  const params = useParams<{ categoriesId?: string }>();
+  const categoryId = params?.categoriesId;
 
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -49,17 +50,11 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(createProductCategorySchema),
-    defaultValues: initialData
-      ? {
-          nameEn: initialData.nameEn,
-          nameAr: initialData.nameAr,
-          imageUrl: initialData.imageUrl,
-        }
-      : {
-          nameEn: "",
-          nameAr: "",
-          imageUrl: "",
-        },
+    defaultValues: {
+      nameEn: initialData?.nameEn ?? "",
+      nameAr: initialData?.nameAr ?? "",
+      imageUrl: initialData?.imageUrl ?? "",
+    },
   });
 
   const onSubmit = async (data: CategoryFormValues) => {
@@ -73,8 +68,7 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       }
 
       toast.success(toastMessage);
-      router.push(`/home/categories`);
-      router.refresh();
+      router.push("/home/categories");
     } catch (error) {
       toast.error(axiosErrorHandler(error) || "Something went wrong");
     } finally {
@@ -87,9 +81,8 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       await axios.delete(`${DOMAIN}/api/home/categories/${categoryId}`);
-      router.push(`/home/categories`);
+      router.push("/home/categories");
       toast.success("Category Deleted.");
-      router.refresh();
     } catch (error) {
       toast.error(
         axiosErrorHandler(error) ||
@@ -114,6 +107,7 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
         <Heading title={title} description={description} />
         {initialData && (
           <Button
+            aria-label="Delete category"
             disabled={loading}
             className="bg-red-700 p-1 rounded-md text-white hover:bg-slate-600"
             variant="destructive"
@@ -129,19 +123,20 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
+          className={`space-y-8 w-full ${loading ? "opacity-60 pointer-events-none" : ""}`}
         >
-          <div className="grid grid-cols-3 gap-8">
+          {/* English & Arabic names */}
+          <div className="grid gap-6 sm:grid-cols-2">
             <FormField
               control={form.control}
               name="nameEn"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name-En</FormLabel>
+                  <FormLabel>Name (EN)</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Category Name-En"
+                      placeholder="Category Name in English"
                       className="placeholder:text-gray-500"
                       {...field}
                     />
@@ -155,11 +150,11 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
               name="nameAr"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name-Ar</FormLabel>
+                  <FormLabel>Name (AR)</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Category Name-Ar"
+                      placeholder="Category Name in Arabic"
                       className="placeholder:text-gray-500"
                       {...field}
                     />
@@ -170,32 +165,18 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
             />
           </div>
 
-          <div className="grid grid-cols-3 gap-8">
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Background Image</FormLabel>
-                  <FormControl>
-                    <ImageUpload
-                      value={field.value ? [field.value] : []}
-                      onChange={(url) => field.onChange(url)}
-                      onRemove={() => field.onChange("")}
-                    />
-                  </FormControl>
-                  <FormMessage className="text-red-600" />
-                </FormItem>
-              )}
-            />
-          </div>
+         
 
-          <Button
-            disabled={loading}
-            className="ml-auto bg-slate-800 text-white hover:bg-slate-600"
-          >
-            {action}
-          </Button>
+          {/* Submit button */}
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-slate-800 text-white hover:bg-slate-600"
+            >
+              {action}
+            </Button>
+          </div>
         </form>
       </Form>
       <Separator className="bg-gray-300" />

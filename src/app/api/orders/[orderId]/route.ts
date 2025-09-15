@@ -12,6 +12,7 @@ export async function OPTIONS(req: NextRequest) {
   return new NextResponse(null, { status: 204, headers });
 }
 
+
 export async function GET(req: NextRequest, { params }: PageProps) {
   const headers = CorsHandler(req);
 
