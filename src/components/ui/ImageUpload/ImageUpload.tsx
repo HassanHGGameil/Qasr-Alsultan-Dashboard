@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { Button } from "../button";
 import { ImagePlusIcon, Trash } from "lucide-react";
@@ -7,8 +8,8 @@ import { CldUploadWidget } from "next-cloudinary";
 
 interface ImageUploadProps {
   disabled?: boolean;
-  onChange: (value: string[]) => void;
-  onRemove: (value: string[]) => void;
+  onChange: (value: string) => void;
+  onRemove: (value: string) => void;
   value: string[];
   className?: string;
 }
@@ -33,20 +34,19 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     try {
       await fetch("/api/delete-image", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ publicId }),
       });
 
-      // ✅ update array after removing
-      onRemove(value.filter((item) => item !== url));
+      onRemove(url);
     } catch (error) {
       console.error("Error deleting image:", error);
     }
   };
 
   if (!isMounted) return null;
-
-  const PLACEHOLDER_IMAGE = "/placeholder-product.jpg";
 
   return (
     <div>
@@ -67,14 +67,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 <Trash className="h-4 w-4" />
               </Button>
             </div>
-            <Image
-              src={url || PLACEHOLDER_IMAGE}
-              alt="Image"
-              fill
-              className="object-cover"
-              sizes="64px"
-              priority={false}
-            />
+            <Image fill className="object-cover" alt="Image" src={url} />
           </div>
         ))}
       </div>
@@ -83,25 +76,26 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         uploadPreset="d4aeanaa"
         onSuccess={(result) => {
           if (typeof result.info === "object" && "secure_url" in result.info) {
-            const newUrl = (result.info as { secure_url: string }).secure_url;
-            // ✅ append to array
-            onChange([...value, newUrl]);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onChange((result.info as any).secure_url);
           }
         }}
         onError={(error) => console.error("Upload failed:", error)}
       >
-        {({ open }) => (
-          <Button
-            type="button"
-            disabled={disabled}
-            variant="secondary"
-            onClick={() => open()}
-            className="bg-slate-600 text-white hover:bg-slate-500"
-          >
-            <ImagePlusIcon className="h-4 w-4 mr-1 text-sm" />
-            Upload Image
-          </Button>
-        )}
+        {({ open }) => {
+          return (
+            <Button
+              type="button"
+              disabled={disabled}
+              variant="secondary"
+              onClick={() => open()}
+              className="bg-slate-600 text-white hover:bg-slate-500"
+            >
+              <ImagePlusIcon className="h-4 w-4 mr-1 text-sm" />
+              Upload Image
+            </Button>
+          );
+        }}
       </CldUploadWidget>
     </div>
   );
