@@ -7,8 +7,8 @@ import { CldUploadWidget } from "next-cloudinary";
 
 interface ImageUploadProps {
   disabled?: boolean;
-  onChange: (value: string) => void;
-  onRemove: (value: string) => void;
+  onChange: (value: string[]) => void;
+  onRemove: (value: string[]) => void;
   value: string[];
   className?: string;
 }
@@ -33,13 +33,12 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
     try {
       await fetch("/api/delete-image", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ publicId }),
       });
 
-      onRemove(url);
+      // ✅ update array after removing
+      onRemove(value.filter((item) => item !== url));
     } catch (error) {
       console.error("Error deleting image:", error);
     }
@@ -48,7 +47,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   if (!isMounted) return null;
 
   const PLACEHOLDER_IMAGE = "/placeholder-product.jpg";
-
 
   return (
     <div>
@@ -71,7 +69,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             </div>
             <Image
               src={url || PLACEHOLDER_IMAGE}
-              alt={"Image"}
+              alt="Image"
               fill
               className="object-cover"
               sizes="64px"
@@ -85,26 +83,25 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         uploadPreset="d4aeanaa"
         onSuccess={(result) => {
           if (typeof result.info === "object" && "secure_url" in result.info) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            onChange((result.info as any).secure_url);
+            const newUrl = (result.info as { secure_url: string }).secure_url;
+            // ✅ append to array
+            onChange([...value, newUrl]);
           }
         }}
         onError={(error) => console.error("Upload failed:", error)}
       >
-        {({ open }) => {
-          return (
-            <Button
-              type="button"
-              disabled={disabled}
-              variant="secondary"
-              onClick={() => open()}
-              className="bg-slate-600 text-white hover:bg-slate-500"
-            >
-              <ImagePlusIcon className="h-4 w-4 mr-1 text-sm" />
-              Upload Image
-            </Button>
-          );
-        }}
+        {({ open }) => (
+          <Button
+            type="button"
+            disabled={disabled}
+            variant="secondary"
+            onClick={() => open()}
+            className="bg-slate-600 text-white hover:bg-slate-500"
+          >
+            <ImagePlusIcon className="h-4 w-4 mr-1 text-sm" />
+            Upload Image
+          </Button>
+        )}
       </CldUploadWidget>
     </div>
   );

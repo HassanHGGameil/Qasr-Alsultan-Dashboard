@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -19,13 +19,13 @@ import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 import axios from "axios";
 import AlertModal from "@/components/Modals/alert-modal";
+import ImageUpload from "@/components/ui/ImageUpload/ImageUpload";
 import { ProductCategory } from "@prisma/client";
 import { createProductCategorySchema } from "@/validations/home/products/productCategory";
 import { axiosErrorHandler } from "@/utils";
 import { DOMAIN } from "@/lib/constains/constains";
 import Heading from "@/components/common/Heading/Heading";
-// ⚡ make sure this is correct — you can swap to "next/navigation" if needed
-import { useRouter } from "@/i18n/routing"; 
+import { useRouter } from "@/i18n/routing";
 import { useParams } from "next/navigation";
 
 type CategoryFormValues = z.infer<typeof createProductCategorySchema>;
@@ -35,7 +35,6 @@ interface CategoryFormProps {
 }
 
 const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
-  // ✅ Correct Next.js 15 typing for useParams
   const params = useParams<{ categoriesId?: string }>();
   const categoryId = params?.categoriesId;
 
@@ -123,7 +122,9 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={`space-y-8 w-full ${loading ? "opacity-60 pointer-events-none" : ""}`}
+          className={`space-y-8 w-full ${
+            loading ? "opacity-60 pointer-events-none" : ""
+          }`}
         >
           {/* English & Arabic names */}
           <div className="grid gap-6 sm:grid-cols-2">
@@ -165,7 +166,24 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
             />
           </div>
 
-         
+          {/* Image Upload */}
+          <FormField
+            control={form.control}
+            name="imageUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Background Image</FormLabel>
+                <FormControl>
+                  <ImageUpload
+                    value={field.value ? [field.value] : []}
+                    onChange={(url) => field.onChange(url)}
+                    onRemove={() => field.onChange("")}
+                  />
+                </FormControl>
+                <FormMessage className="text-red-600" />
+              </FormItem>
+            )}
+          />
 
           {/* Submit button */}
           <div className="flex justify-end">

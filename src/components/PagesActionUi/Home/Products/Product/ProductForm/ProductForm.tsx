@@ -19,7 +19,7 @@ import {
 import toast from "react-hot-toast";
 import axios from "axios";
 import AlertModal from "@/components/Modals/alert-modal";
-import ImageUpload from "@/components/ui/ImageUpload/ImageUpload";
+// import ImageUpload from "@/components/ui/ImageUpload/ImageUpload";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -363,7 +363,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
           {/* ___ Images Upload _______ */}
 
-          <FormField
+          {/* <FormField
             control={form.control}
             name="images"
             render={({ field }) => (
@@ -385,7 +385,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <FormMessage className="text-red-600" />
               </FormItem>
             )}
-          />
+          /> */}
 
           <div className="grid grid-cols-3  gap-8">
             <FormField

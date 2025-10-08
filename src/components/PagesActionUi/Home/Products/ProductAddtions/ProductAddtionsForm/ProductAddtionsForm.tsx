@@ -41,7 +41,7 @@ interface UserPkgFormProps {
     | (ProductAddtions & {
         productItem: ProductItem[];
       })
-    | null ;
+    | null;
   productCategory: ProductCategory[] | null;
 }
 
@@ -72,7 +72,7 @@ const ProductAddionsForm: React.FC<UserPkgFormProps> = ({
           })),
         }
       : {
-        titleEn: "",
+          titleEn: "",
           titleAr: "",
           imageUrl: "",
           productItem: [],
@@ -149,7 +149,7 @@ const ProductAddionsForm: React.FC<UserPkgFormProps> = ({
       toast.error(
         "Make sure you removed all products and categories using this package recipe first."
       );
-      axiosErrorHandler(error)
+      axiosErrorHandler(error);
     } finally {
       setLoading(false);
       setOpen(false);
@@ -329,7 +329,6 @@ const ProductAddionsForm: React.FC<UserPkgFormProps> = ({
                           name={`productItem.${index}.nameAr`}
                           render={({ field }) => (
                             <FormItem>
-                              
                               <FormControl>
                                 <Input
                                   disabled={loading}
@@ -429,7 +428,7 @@ const ProductAddionsForm: React.FC<UserPkgFormProps> = ({
                                 value={String(field.value)}
                                 defaultValue={String(field.value)}
                               >
-                                <FormControl >
+                                <FormControl>
                                   <SelectTrigger className="hover:bg-gray-50  focus:ring-2 focus:ring-blue-500">
                                     <SelectValue placeholder="Select a category" />
                                   </SelectTrigger>

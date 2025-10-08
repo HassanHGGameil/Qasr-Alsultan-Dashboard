@@ -3,6 +3,7 @@ import CategoriesForm from "@/components/PagesActionUi/Home/Categories/Categorie
 import prismadb from "@/lib/prismaDB/prismadb";
 import { notFound } from "next/navigation";
 
+
 type PageProps = {
   params: Promise<{ categoriesId: string }>;
 };
