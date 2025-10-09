@@ -67,6 +67,7 @@ COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 USER nextjs
 
 EXPOSE 3000
+ENV HOSTNAME="0.0.0.0"
 
 # Optional healthcheck (you can comment out if not needed)
 # HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1
