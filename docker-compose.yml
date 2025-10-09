@@ -4,10 +4,11 @@ services:
   nextjs-app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
+    container_name: qasr-nextjs-app
     command: ["node", "server.js"]
     environment:
-      NODE_ENV: ${NODE_ENV}
+      NODE_ENV: ${NODE_ENV:-production}
       PORT: 3000
       DATABASE_URL: ${DATABASE_URL}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
@@ -16,8 +17,8 @@ services:
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
       NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ${NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
-    ports:
-      - "3000:3000" # Expose Next.js to host (localhost:3000)
+    expose:
+      - "3000"
     networks:
       - qasr-alsultan-dashboard
     depends_on:
@@ -25,55 +26,82 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:3000/api/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 40s
 
   mongo:
-    image: mongo:6
-    container_name: mongodb
+    image: mongo:7
+    container_name: qasr-mongodb
     restart: unless-stopped
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-qasr_admin}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-qasr_alsultan_db}
     volumes:
       - mongo_data:/data/db
+      - ./mongo-init:/docker-entrypoint-initdb.d:ro
     networks:
       - qasr-alsultan-dashboard
-    ports:
-      - "27017:27017"
+    # Don't expose MongoDB ports to host in production
+    # ports:
+    #   - "27017:27017"
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/${MONGO_DATABASE:-qasr_alsultan_db} --quiet
       interval: 30s
       timeout: 10s
       retries: 5
+      start_period: 40s
 
   nginx:
-    image: nginx:stable-alpine
-    container_name: nginx-proxy
+    image: nginx:alpine
+    container_name: qasr-nginx
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/www/certbot
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
     depends_on:
       - nextjs-app
     networks:
       - qasr-alsultan-dashboard
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   certbot:
     image: certbot/certbot
-    container_name: certbot
-    restart: unless-stopped
+    container_name: qasr-certbot
     volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/www/certbot
-    entrypoint: sh -c "trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done"
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    networks:
+      - qasr-alsultan-dashboard
 
 networks:
   qasr-alsultan-dashboard:
