@@ -48,8 +48,8 @@ services:
       timeout: 10s
       retries: 5
 
-  nginx:
-    image: nginx:stable-alpine
+  nginx-proxy:
+    image: nginx:latest
     container_name: nginx-proxy
     restart: unless-stopped
     ports:
