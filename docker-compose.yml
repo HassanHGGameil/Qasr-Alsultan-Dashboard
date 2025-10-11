@@ -17,7 +17,7 @@ services:
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
       NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ${NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
     ports:
-      - "3000:3000" # Expose Next.js to host (localhost:3000)
+      - "3000:3000"
     networks:
       - qasr-alsultan-dashboard
     depends_on:
@@ -25,11 +25,10 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:3000 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
-      
 
   mongo:
     image: mongo:6
@@ -43,10 +42,8 @@ services:
       - mongo_data:/data/db
     networks:
       - qasr-alsultan-dashboard
-    ports:
-      - "27017:27017"
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: ["CMD", "mongostat", "--rowcount", "1"]
       interval: 30s
       timeout: 10s
       retries: 5
