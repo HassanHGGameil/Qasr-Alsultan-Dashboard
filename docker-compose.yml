@@ -1,51 +1,61 @@
+version: "3.9"
 
 services:
   nextjs-app:
+    container_name: qasr-alsultan-dashboard
     build:
       context: .
       dockerfile: Dockerfile
     command: ["node", "server.js"]
+
     environment:
       NODE_ENV: ${NODE_ENV}
       PORT: 3000
       DATABASE_URL: ${DATABASE_URL}
       NEXTAUTH_URL: ${NEXTAUTH_URL}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+
       NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}
       CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
       CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
       NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET: ${NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+
     ports:
       - "3000:3000"
-    networks:
-      - qasr-alsultan-dashboard
+
     depends_on:
       mongo:
         condition: service_healthy
+
+    networks:
+      - qasr-alsultan-dashboard
+
     restart: unless-stopped
-   
+
 
   mongo:
     image: mongo:6
     container_name: mongodb
-    restart: unless-stopped
+
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+
     volumes:
       - mongo_data:/data/db
+
     networks:
       - qasr-alsultan-dashboard
+
+    restart: unless-stopped
+
+    # FIXED HEALTHCHECK (works on all servers)
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.adminCommand('ping')"]
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/localhost/27017"]
       interval: 10s
       timeout: 5s
       retries: 5
-
-    
-
-    
 
 
 networks:
@@ -54,4 +64,3 @@ networks:
 
 volumes:
   mongo_data:
- 
