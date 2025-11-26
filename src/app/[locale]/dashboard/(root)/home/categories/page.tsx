@@ -2,25 +2,27 @@ import { format } from "date-fns";
 import prismadb from "@/lib/prismaDB/prismadb";
 import getCurrentUser from "@/actions/getCurrentUser";
 import CategoryColumnType from "@/types/CategoryColmunType";
-import CategoriesClient from "@/components/PagesActionUi/Home/Categories/CategoriesClient/CategoriesClient";
+import CategoryClientMain from "@/components/PagesActionUi/Home/Categories/CategoryClientMain/CategoryClientMain";
 
 const CategoriesPage = async () => {
   const currentUser = await getCurrentUser();
 
   const categories = await prismadb.categories.findMany({
-    
     orderBy: {
       createdAt: "desc",
     },
   });
 
-  const formatedCategories: CategoryColumnType[] = categories.map((item) => ({
-    id: item.id,
+  const formatedCategories: CategoryColumnType[] = categories
+    .map((item) => ({
+      id: item.id,
     nameEn: item.nameEn,
     nameAr: item.nameAr,
     imageUrl: item.imageUrl,
+    position: Number(item.position),
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
-  }));
+    }))
+    .sort((a, b) => a.position - b.position);
 
   const isMangement =
     currentUser?.role === "OWNER" ||
@@ -32,7 +34,7 @@ const CategoriesPage = async () => {
       {isMangement ? (
         <div className="flex-col w-full">
           <div className="flex-1 space-y-4 p-8 pt-6">
-            <CategoriesClient data={formatedCategories} />
+            <CategoryClientMain data={formatedCategories} />
           </div>
         </div>
       ) : (

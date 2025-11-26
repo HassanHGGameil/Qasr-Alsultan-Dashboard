@@ -14,7 +14,7 @@ const MainLayout = async ({ children }: IAdmin) => {
 
   if (!currentUser) {
     redirect({
-      href: `${DOMAIN}/en/auth/sign-in`,
+      href: `${DOMAIN}/en/dashboard/auth/sign-in`,
       locale: "en",
     });
     return null;

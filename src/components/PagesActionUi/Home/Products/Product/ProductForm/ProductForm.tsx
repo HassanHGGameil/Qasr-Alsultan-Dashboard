@@ -35,6 +35,7 @@ import { DOMAIN } from "@/lib/constains/constains";
 import { axiosErrorHandler } from "@/utils";
 import Heading from "@/components/common/Heading/Heading";
 import { useParams } from "next/navigation";
+import ImageUpload from "@/components/ui/ImageUpload/ImageUpload";
 
 
 type ProductFormValues = z.infer<typeof productSchema>;
@@ -363,7 +364,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
           {/* ___ Images Upload _______ */}
 
-          {/* <FormField
+          <FormField
             control={form.control}
             name="images"
             render={({ field }) => (
@@ -385,7 +386,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <FormMessage className="text-red-600" />
               </FormItem>
             )}
-          /> */}
+          />
 
           <div className="grid grid-cols-3  gap-8">
             <FormField

@@ -21,8 +21,8 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icons/logo-02.png", sizes: "32x32" },
-      { url: "/icons/logo-02.png", sizes: "16x16" },
+      { url: "/icons/qasr-alsutan-logo.png", sizes: "32x32" },
+      { url: "/icons/qasr-alsutan-logo.png", sizes: "16x16" },
     ],
   },
 };

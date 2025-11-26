@@ -10,7 +10,7 @@ const SignInPage = async () => {
     
       if (currentUser) {
         redirect({
-          href: `${DOMAIN}/en/`,
+          href: `${DOMAIN}/en/dahsboard`,
           locale: "en",
         });
         return null;

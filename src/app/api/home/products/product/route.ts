@@ -44,12 +44,19 @@ export async function POST(req: NextRequest) {
     const slugEn = generateSlug(body.titleEn);
     const slugAr = generateSlug(body.titleAr, true);
 
+    const lastProduct = await prismadb.product.findFirst({
+            orderBy: { position: "desc" },
+          });
+      const newPosition = lastProduct ? Number(lastProduct.position) + 1 : 1;
+
+
     // Create product
     const product = await prismadb.product.create({
       data: {
         ...body,
         slugEn,
         slugAr,
+        position: newPosition,
         images: {
           createMany: {
             data: body.images.map((image) => ({ url: image.url })),

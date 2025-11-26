@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
   userId            String  @db.ObjectId
@@ -75,39 +76,85 @@ enum Role {
   OWNER
 }
 
-model HeroSection {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  slug String @unique
 
-  nameEn  String
-  nameAr  String
-  titleEn String
-  titleAr String
 
-  subtitleEn String?
-  subtitleAr String?
 
-  descEn   String?
-  descAr   String?
-  imageUrl String?
-  bgUrl    String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
 
-// ============ HOME Page Structure - START =========================
 
-model Banner {
-  id           String         @id @default(auto()) @map("_id") @db.ObjectId
-  nameEn       String
-  nameAr       String
+
+// ============ Constants Collections - START =========================
+
+model Hero {
+  id        String              @id @default(auto()) @map("_id") @db.ObjectId
+  slug         String           @unique
   titleEn      String
   titleAr      String
   subtitleEn   String
   subtitleAr   String
-  link         String?
-  bannerImages BannerImages[]
+  descEn       String  @default("")
+  descAr       String  @default("")
+  heroImages   HeroImages[]
+  bgOne         String?
+  bgTwo         String?
+  position       Int?
+  isFeatured   Boolean        @default(false)
+  isArchived   Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model HeroImages {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  heroId    String   @db.ObjectId
+  hero      Hero   @relation(fields: [heroId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+
+model MainSection {
+  id        String              @id @default(auto()) @map("_id") @db.ObjectId
+  slug         String           @unique
+  titleEn      String
+  titleAr      String
+  subtitleEn   String
+  subtitleAr   String
+  descEn       String  @default("")
+  descAr       String  @default("")
+  sectionImages   SectionImages[]
+  bgOne         String?
+  bgTwo         String?
+  position       Int?
+  isFeatured   Boolean        @default(false)
+  isArchived   Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model SectionImages {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  mainSectionId    String   @db.ObjectId
+  mainSection      MainSection   @relation(fields: [mainSectionId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model Banner {
+  id        String              @id @default(auto()) @map("_id") @db.ObjectId
+  slug         String           @unique
+  titleEn      String
+  titleAr      String
+  subtitleEn   String
+  subtitleAr   String
+  bannerImages   BannerImages[]
+  position       Int?
   isFeatured   Boolean        @default(false)
   isArchived   Boolean        @default(false)
   createdAt    DateTime       @default(now())
@@ -116,12 +163,22 @@ model Banner {
 
 model BannerImages {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  bannerId  String   @db.ObjectId
-  Banner    Banner   @relation(fields: [bannerId], references: [id], onDelete: Cascade)
+  bannerId    String   @db.ObjectId
+  banner      Banner   @relation(fields: [bannerId], references: [id], onDelete: Cascade)
   url       String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+
+// ============ Constants Collections - END =========================
+
+
+
+
+// ============ HOME Page Structure - START =========================
+
+
 
 model Categories {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -131,6 +188,7 @@ model Categories {
   nameEn    String
   nameAr    String
   imageUrl  String
+  position  Int?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -143,6 +201,9 @@ model Branches {
   titleAr  String
   imageUrl String
 
+  position  Int?
+
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -154,6 +215,7 @@ model ProductAddtions {
   imageUrl    String
   productItem ProductItem[]
   products    Product[]     @relation("productAddtionsToProduct")
+
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -182,6 +244,8 @@ model ProductCategory {
   nameEn      String
   nameAr      String
   imageUrl    String
+  position  Int?
+
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }
@@ -204,6 +268,8 @@ model Product {
   offer             Int?
   offerPrice        Int?
   quantity          Int?
+  position  Int?
+
   isFeatured        Boolean          @default(false)
   isBestSeller      Boolean          @default(false)
   isArchived        Boolean          @default(false)
@@ -259,6 +325,9 @@ model Order {
   zipCode String @default("")
   city    String @default("")
   branch  String @default("")
+
+  position  Int?
+
 
   orderItem OrderItem[]
   createdAt DateTime    @default(now())

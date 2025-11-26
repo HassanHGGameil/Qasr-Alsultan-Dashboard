@@ -46,12 +46,18 @@ export async function POST(req: NextRequest) {
     const slugEn = generateSlug(body.nameEn);
     const slugAr = generateSlug(body.nameAr, true);
 
+    const lastCategory = await prismadb.categories.findFirst({
+            orderBy: { position: "desc" },
+          });
+      const newPosition = lastCategory ? Number(lastCategory.position) + 1 : 1;
+
     // Create product
     const categories = await prismadb.categories.create({
       data: {
         ...body,
         slugEn,
         slugAr,
+        position: newPosition
       },
     });
 

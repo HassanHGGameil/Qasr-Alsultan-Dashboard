@@ -7,15 +7,14 @@ import {
   IoGitBranchOutline,
   IoImageOutline,
   IoListOutline,
-  IoPricetagsOutline,
 } from "react-icons/io5";
 import { PiUsersThreeLight } from "react-icons/pi";
-import { SiPkgsrc } from "react-icons/si";
-import { HiCollection } from "react-icons/hi";
+import {  HiOutlineShoppingBag } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 import Link from "../Link";
+import { HiOutlineRectangleStack } from "react-icons/hi2";
 
 type NavItem = {
   id: number;
@@ -52,37 +51,44 @@ const MainNav = ({
   const routes: NavRoute[] = [
     {
       id: 1,
-      href: "/",
+      href: "/dashboard",
       label: "Overview",
       icon: <IoBagCheckOutline />,
     },
     {
       id: 2,
-      href: "/users",
+      href: "/dashboard/users",
       label: "Users",
       icon: <PiUsersThreeLight />,
     },
     {
       id: 3,
-      href: "/heros",
+      href: "/dashboard/hero",
       label: "Hero",
       icon: <IoImageOutline />,
     },
+
     {
       id: 4,
-      href: "/billboards",
-      label: "Billboard",
-      icon: <IoPricetagsOutline />,
+      href: "/dashboard/home",
+      label: "HomePage",
+      icon: <IoBagCheckOutline />,
     },
+    // {
+    //   id: 4,
+    //   href: "/billboards",
+    //   label: "Billboard",
+    //   icon: <IoPricetagsOutline />,
+    // },
     {
       id: 5,
-      href: "/home/branches",
+      href: "/dashboard/home/branches",
       label: "Branches",
       icon: <IoGitBranchOutline />,
     },
     {
       id: 6,
-      href: "/home/categories",
+      href: "/dashboard/home/categories",
       label: "Categories",
       icon: <IoListOutline />,
     },
@@ -90,22 +96,22 @@ const MainNav = ({
     {
       id: 7,
       label: "Products",
-      icon: <SiPkgsrc />,
+      icon: <HiOutlineShoppingBag />,
       isMenu: true,
       menuKey: "products",
       children: [
-        { id: 71, href: `/home/products/productCategory`, label: "Category" },
-        { id: 72, href: "/home/products/productAddtions", label: "Addtions" },
-        { id: 73, href: "/home/products/product", label: "Products" },
+        { id: 71, href: `/dashboard/home/products/productCategory`, label: "Category" },
+        { id: 72, href: "/dashboard/home/products/productAddtions", label: "Addtions" },
+        { id: 73, href: "/dashboard/home/products/product", label: "Products" },
       ],
     },
     {
       id: 8,
       label: "Orders",
-      icon: <HiCollection />,
+      icon: <HiOutlineRectangleStack />,
       isMenu: true,
       menuKey: "orders",
-      children: [{ id: 81, href: "/orders", label: "Orders" }],
+      children: [{ id: 81, href: "/dashboard/orders", label: "Orders" }],
     },
   ];
 
