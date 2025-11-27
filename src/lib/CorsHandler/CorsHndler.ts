@@ -13,6 +13,8 @@ export const CorsHandler = (req: NextRequest) => {
     "http://localhost:3003",
     "https://www.asasy.net",
     "https://qasr-alsutan-store.vercel.app",
+    "http://markupagency.net",
+    "http://72.60.80.158",
     "https://https://qasr-alsutan-dashboard-lfc5.vercel.app",
   ];
 
