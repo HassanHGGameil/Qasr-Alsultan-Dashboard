@@ -5,19 +5,20 @@ import { Locale, routing } from "@/i18n/routing";
 import "./globals.css";
 
 import { Metadata } from "next";
-import { ToasterProvider } from "@/providers/ToastProvider/ToasterProvider";
-import { ProvidersTheme } from "@/providers/ThemeProvider";
-
+import { NextAuthProvider } from "../providers/SessionProvider/SessionProvider";
+import ReduxProvider from "../providers/ReduxProvider";
+import { ToasterProvider } from "../providers/ToastProvider/ToasterProvider";
+import { ProvidersTheme } from "../providers/ThemeProvider";
 import localfont from "next/font/local";
-import { NextAuthProvider } from "@/providers/SessionProvider/SessionProvider";
+
 
 const myFont = localfont({ src: "../../fonts/Cairo-Medium.ttf" });
 
 export const metadata: Metadata = {
   // metadataBase: new URL("https://markup.vip"),
   title: {
-    default: "Qasr Alsultan Dashboard",
-    template: "%s | Mansour",
+    default: "Qasr Alsultan",
+    template: "%s | Qasr Alsultan",
   },
   icons: {
     icon: [
@@ -56,8 +57,10 @@ export default async function LocaleLayout({
       <body className={`bg-[#FBFBFB] dark:bg-slate-900 ${myFont.className}`}>
         <NextAuthProvider>
           <NextIntlClientProvider messages={messages}>
-            <ToasterProvider />
-            <ProvidersTheme>{children}</ProvidersTheme>
+            <ReduxProvider>
+              <ToasterProvider />
+              <ProvidersTheme>{children}</ProvidersTheme>
+            </ReduxProvider>
           </NextIntlClientProvider>
         </NextAuthProvider>
       </body>

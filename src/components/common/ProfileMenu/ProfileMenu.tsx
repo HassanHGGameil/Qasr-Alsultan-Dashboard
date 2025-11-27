@@ -102,7 +102,7 @@ const ProfileMenu = () => {
       ) : (
         <div className="flex items-center">
           <Link
-            href={"/sign-in"}
+            href={"/auth/sign-in"}
             className="hidden lg:block bg-white rounded-full p-1.5 hover:bg-slate-200 shadow-sm"
           >
             <CiUser className="text-[25px] dark:text-black" />

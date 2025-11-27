@@ -42,7 +42,6 @@ const NewList = <T extends Record<string, any>>({
 
   return (
     <div
-    dir="ltr"
       className="relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -83,12 +82,12 @@ const NewList = <T extends Record<string, any>>({
           },
           // Large desktop (1200px and up)
           1200: {
-            slidesPerView: 5,
+            slidesPerView: 4,
             spaceBetween: 24,
           },
           // Extra large desktop (1400px and up)
           1400: {
-            slidesPerView: 5,
+            slidesPerView: 4,
             spaceBetween: 24,
           }
           
@@ -102,7 +101,7 @@ const NewList = <T extends Record<string, any>>({
       >
         {records.length > 0 ? (
           records.map((itemData) => (
-            <SwiperSlide key={itemData.slug}>{renderItem(itemData)}</SwiperSlide>
+            <SwiperSlide key={itemData.id}>{renderItem(itemData)}</SwiperSlide>
           ))
         ) : (
           <SwiperSlide>

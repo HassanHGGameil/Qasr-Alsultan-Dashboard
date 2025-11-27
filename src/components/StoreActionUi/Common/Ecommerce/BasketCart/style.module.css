@@ -1,0 +1,45 @@
+
+.cart_badge {
+  position: absolute;
+  top: -8px;
+  right: 23px;
+  background: #e0f4e1;
+  color: #222;
+  width: 14.5px;
+  height: 14.5px;
+  border-radius: 50%;
+  font-size: 0.5rem;
+  font-weight: 600;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
+.pumpCartQuantity {
+  animation: pumping 300ms ease-out;
+  border: 1px solid #ec0245;
+  background: #ec0245;
+  color: white;
+  
+}
+
+@keyframes pumping {
+  0% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(0.8);
+  }
+  30% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(1.7);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

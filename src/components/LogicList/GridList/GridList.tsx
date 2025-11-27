@@ -15,15 +15,16 @@ const GridList = <T extends { slug?: string; id?: string | number }>({
   className = "",
   itemClassName = "",
 }: GridListProps<T>) => {
+
   
   if (records.length === 0) {
-    return <div className={`text-center p-4 ${className}`}>{emptyMessage}</div>;
+    return <div className={` ${className}`}>{emptyMessage}</div>;
   }
 
   return (
     <div className={`${className}`}>
       {records.map((record) => (
-        <div
+        <div 
           key={record.slug || record.id || JSON.stringify(record)}
           className={itemClassName}
         >
