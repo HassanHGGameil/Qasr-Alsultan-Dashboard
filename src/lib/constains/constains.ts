@@ -21,4 +21,4 @@ export const STORE = `http://markupagency.net`;
 
 
 
-export const FRONTEND = `http://localhost:3001`;
+// export const FRONTEND = `http://localhost:3001`;

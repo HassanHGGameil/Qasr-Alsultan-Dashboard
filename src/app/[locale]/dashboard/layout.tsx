@@ -1,41 +1,42 @@
 "use client";
 
-import { ReactNode } from "react";
-import { useSession } from "next-auth/react";
-
 import AdminSidebar from "@/components/common/AdminHeader/AdminSideBar";
 import Header from "@/components/common/Header";
-import { useRouter } from "@/i18n/routing";
+import { DOMAIN } from "@/lib/constains/constains";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { ReactNode, useEffect } from "react";
 
-interface DashboardLayoutProps {
+interface IAdmin {
   children: ReactNode;
 }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+const MainLayout = ({ children }: IAdmin) => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  if (!session?.user) {
-      router.push("/auth/sign-in");
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push(`${DOMAIN}/en/auth/sign-in`);
     }
+  }, [status, router]);
 
-  
-  
+  // Optional: show nothing while loading
+  if (status === "loading") return null;
+
+  if (!session?.user) return null;
 
   return (
-    <main className="min-h-screen bg-background flex flex-col">
+    <main className="">
       <Header />
-
-      <div className="flex w-full min-h-screen">
-        <aside className="hidden lg:block w-72 border-r bg-card">
+      <div className="flex w-full">
+        <div className="hidden lg:block">
           <AdminSidebar />
-        </aside>
-
-        <section className="flex-1 p-4 md:p-6 overflow-auto">
-          {children}
-        </section>
+        </div>
+        <div className="flex w-full">{children}</div>
       </div>
     </main>
   );
-}
+};
+
+export default MainLayout;
