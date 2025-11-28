@@ -1,108 +1,109 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
 import { PrismaAdapter } from "@auth/prisma-adapter";
-
 import bcrypt from "bcryptjs";
-
 import prisma from "./prismaDB/prismadb";
 
 export const authOptions: NextAuthOptions = {
-  // Prisma Adapter for connecting NextAuth with your Prisma DB
   adapter: PrismaAdapter(prisma),
 
   providers: [
-   
-
     CredentialsProvider({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
+        try {
+          if (!credentials?.email || !credentials.password) {
+            throw new Error("Invalid email or password");
+          }
+
+          const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          });
+
+          // ❗ Protect internal info — always return generic error
+          if (!user || !user.hashedPassword) {
+            throw new Error("Invalid email or password");
+          }
+
+          const isCorrectPassword = await bcrypt.compare(
+            credentials.password,
+            user.hashedPassword
+          );
+
+          if (!isCorrectPassword) {
+            throw new Error("Invalid email or password");
+          }
+
+          // ✔ Only return needed fields
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          };
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
           throw new Error("Invalid email or password");
         }
-
-        const user = await prisma.user.findUnique({
-          where: {
-            email: credentials.email,
-          },
-        });
-
-        if (!user || !user?.hashedPassword) {
-          throw new Error("Invalid email or password");
-        }
-
-        const isCorrectPassword = await bcrypt.compare(
-          credentials.password,
-          user.hashedPassword,
-        );
-
-        if (!isCorrectPassword) {
-          throw new Error("Invalid email or password");
-        }
-
-        return { id: user.id, email: user.email, name: user.name }; // Include necessary fields
       },
     }),
   ],
 
-  // Session configuration
   session: {
-    strategy: "jwt", // Use JSON Web Tokens for session handling
-    maxAge: 7 * 24 * 60 * 60, // Session lasts for 7 days
+    strategy: "jwt",
+    maxAge: 7 * 24 * 60 * 60, // 7 days
   },
 
-  // JWT configuration
   jwt: {
-    secret: process.env.NEXTAUTH_SECRET, // Ensure this is set in .env
-    maxAge: 7 * 24 * 60 * 60, // Token expires after 7 days
+    maxAge: 7 * 24 * 60 * 60,
   },
 
-  // Debugging for development
-  debug: process.env.NODE_ENV === "development",
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        token.name = user.name;
+        token.role = user.role;
+      }
+      return token;
+    },
 
-  // Pages configuration
+    async session({ session, token }) {
+      if (token) {
+        session.user = {
+          id: token.id as string,
+          email: token.email as string,
+          name: token.name as string,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          role: token.role as any,
+        };
+      }
+      return session;
+    },
+  },
 
-  // Callbacks for token and session handling
-  // callbacks: {
-  //   async jwt({ token, user }) {
-  //     // Attach user ID to token on login
-  //     if (user) {
-  //       token.id = user.id;
-  //     }
-  //     console.log("JWT Callback:", { token, user });
-  //     return token;
-  //   },
-  //   async session({ session, token }) {
-  //     // Include token data in the session object
-  //     if (token) {
-  //       session.user = {
-  //         ...session.user,
-  //         id: token.id, // Attach user ID to session
-  //       };
-  //     }
-  //     console.log("Session Callback:", { session, token });
-  //     return session;
-  //   },
-  // },
+  // ✔ Secure cookies for production (HTTPS)
+  cookies: {
+    sessionToken: {
+      name: "__Secure-next-auth.session-token",
+      options: {
+        httpOnly: true,
+        sameSite: "lax",
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+      },
+    },
+  },
 
-  
-  // Cookies configuration for cross-device compatibility
-  // cookies: {
-  //   sessionToken: {
-  //     name: `__Secure-next-auth.session-token`,
-  //     options: {
-  //       httpOnly: true,
-  //       sameSite: "lax",
-  //       path: "/",
-  //       secure: process.env.NODE_ENV === "production",
-  //     },
-  //   },
-  // },
+  // ❗ Disable debug in production (prevents leaks)
+  debug: false,
 
-  // Secret for signing tokens and sessions
-  secret: process.env.NEXTAUTH_SECRET,
+  // ✔ Required for signing sessions
+  secret: process.env.NEXT_AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
 };
