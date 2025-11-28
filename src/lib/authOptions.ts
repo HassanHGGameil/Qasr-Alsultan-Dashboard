@@ -101,7 +101,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
-  // ❗ Disable debug in production (prevents leaks)
   debug: false,
 
   // ✔ Required for signing sessions
