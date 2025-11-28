@@ -5,3 +5,5 @@ export const formatCurrency = (number: number) => {
   });
   return CURRENCY_FORMATTER.format(number);
 };
+
+

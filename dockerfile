@@ -49,6 +49,12 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV NEXT_TELEMETRY_DISABLED=1
 
+
+# Required for JWT (NextAuth + Prisma)
+ENV NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+ENV NEXTAUTH_URL=${NEXTAUTH_URL}
+
+
 # Create a non-root user
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs

@@ -25,16 +25,23 @@ import { axiosErrorHandler } from "@/utils";
 import { useRouter } from "@/i18n/routing";
 import Link from "@/components/common/Link";
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: "name_required" }),
-  email: z.string().email({ message: "email_invalid" }),
-  phone: z.string().min(6, { message: "phone_required" }).regex(/^[0-9+\-() ]+$/, { message: "phone_invalid" }),
-  password: z.string().min(6, { message: "password_required" }),
-  confirmPassword: z.string().min(6, { message: "confirm_password_required" }),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "passwords_mismatch",
-  path: ["confirmPassword"],
-});
+const formSchema = z
+  .object({
+    name: z.string().min(2, { message: "name_required" }),
+    email: z.string().email({ message: "email_invalid" }),
+    phone: z
+      .string()
+      .min(6, { message: "phone_required" })
+      .regex(/^[0-9+\-() ]+$/, { message: "phone_invalid" }),
+    password: z.string().min(6, { message: "password_required" }),
+    confirmPassword: z
+      .string()
+      .min(6, { message: "confirm_password_required" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "passwords_mismatch",
+    path: ["confirmPassword"],
+  });
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -70,7 +77,7 @@ const SignUpForm = () => {
         password_required: "Password must be at least 6 characters",
         confirm_password_required: "Please confirm your password",
         passwords_mismatch: "Passwords do not match",
-      }
+      },
     },
     ar: {
       title: "إنشاء حساب",
@@ -97,8 +104,8 @@ const SignUpForm = () => {
         password_required: "يجب أن تكون كلمة المرور مكونة من 6 أحرف على الأقل",
         confirm_password_required: "الرجاء تأكيد كلمة المرور",
         passwords_mismatch: "كلمات المرور غير متطابقة",
-      }
-    }
+      },
+    },
   };
 
   const t = translations[locale as keyof typeof translations];
@@ -117,16 +124,16 @@ const SignUpForm = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       setLoading(true);
-      await axios.post('/api/register', {
+      await axios.post("/api/register", {
         name: data.name,
         email: data.email,
         phone: data.phone,
         userPlatform: "DASHBOARD",
 
-        password: data.password
+        password: data.password,
       });
 
-      const signInResult = await signIn('credentials', {
+      const signInResult = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
@@ -139,11 +146,11 @@ const SignUpForm = () => {
 
       toast.success(t.success);
       setIsSubmitted(true);
-      router.push('/');
+      router.push("/dashboard");
       router.refresh();
     } catch (error) {
       toast.error(t.error);
-      axiosErrorHandler(error)
+      axiosErrorHandler(error);
     } finally {
       setLoading(false);
     }
@@ -151,7 +158,7 @@ const SignUpForm = () => {
 
   if (isSubmitted) {
     return (
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -160,8 +167,12 @@ const SignUpForm = () => {
         <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-full">
           <CheckCircle className="w-12 h-12 text-green-500" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">{t.thank_you}</h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">{t.confirmation}</p>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+          {t.thank_you}
+        </h2>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          {t.confirmation}
+        </p>
         <Image
           src={MansourLogo}
           alt="Mansour Logo"
@@ -170,7 +181,7 @@ const SignUpForm = () => {
           className="mb-6 rounded-lg"
         />
         <Button
-          onClick={() => router.push('/auth/signin')}
+          onClick={() => router.push("/auth/signin")}
           className="w-full bg-primary hover:bg-primary/90 transition-colors"
           variant="default"
         >
@@ -181,14 +192,16 @@ const SignUpForm = () => {
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="w-full p-6 bg-white dark:bg-slate-800 rounded-xl shadow-lg max-w-md mx-auto"
     >
       <div className="mb-6 text-center">
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{t.title}</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+          {t.title}
+        </h2>
         <p className="text-gray-600 dark:text-gray-400 mt-2">{t.subtitle}</p>
       </div>
 
@@ -199,17 +212,27 @@ const SignUpForm = () => {
             name="name"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 dark:text-gray-300">{t.name}</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">
+                  {t.name}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder={t.name}
                     {...field}
                     disabled={loading}
-                    className={`dark:bg-slate-700 ${fieldState.error ? 'border-red-500 dark:border-red-500' : ''}`}
+                    className={`dark:bg-slate-700 ${
+                      fieldState.error
+                        ? "border-red-500 dark:border-red-500"
+                        : ""
+                    }`}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500 dark:text-red-400 text-sm">
-                  {fieldState.error && t.validation_messages[fieldState.error.message as keyof typeof t.validation_messages]}
+                  {fieldState.error &&
+                    t.validation_messages[
+                      fieldState.error
+                        .message as keyof typeof t.validation_messages
+                    ]}
                 </FormMessage>
               </FormItem>
             )}
@@ -220,18 +243,28 @@ const SignUpForm = () => {
             name="email"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 dark:text-gray-300">{t.email}</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">
+                  {t.email}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder={t.email}
                     type="email"
                     {...field}
                     disabled={loading}
-                    className={`dark:bg-slate-700 ${fieldState.error ? 'border-red-500 dark:border-red-500' : ''}`}
+                    className={`dark:bg-slate-700 ${
+                      fieldState.error
+                        ? "border-red-500 dark:border-red-500"
+                        : ""
+                    }`}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500 dark:text-red-400 text-sm">
-                  {fieldState.error && t.validation_messages[fieldState.error.message as keyof typeof t.validation_messages]}
+                  {fieldState.error &&
+                    t.validation_messages[
+                      fieldState.error
+                        .message as keyof typeof t.validation_messages
+                    ]}
                 </FormMessage>
               </FormItem>
             )}
@@ -242,18 +275,28 @@ const SignUpForm = () => {
             name="phone"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 dark:text-gray-300">{t.phone}</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">
+                  {t.phone}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder={t.phone}
                     type="tel"
                     {...field}
                     disabled={loading}
-                    className={`dark:bg-slate-700 ${fieldState.error ? 'border-red-500 dark:border-red-500' : ''}`}
+                    className={`dark:bg-slate-700 ${
+                      fieldState.error
+                        ? "border-red-500 dark:border-red-500"
+                        : ""
+                    }`}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500 dark:text-red-400 text-sm">
-                  {fieldState.error && t.validation_messages[fieldState.error.message as keyof typeof t.validation_messages]}
+                  {fieldState.error &&
+                    t.validation_messages[
+                      fieldState.error
+                        .message as keyof typeof t.validation_messages
+                    ]}
                 </FormMessage>
               </FormItem>
             )}
@@ -265,18 +308,28 @@ const SignUpForm = () => {
               name="password"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 dark:text-gray-300">{t.password}</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-300">
+                    {t.password}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t.password}
                       type="password"
                       {...field}
                       disabled={loading}
-                      className={`dark:bg-slate-700 ${fieldState.error ? 'border-red-500 dark:border-red-500' : ''}`}
+                      className={`dark:bg-slate-700 ${
+                        fieldState.error
+                          ? "border-red-500 dark:border-red-500"
+                          : ""
+                      }`}
                     />
                   </FormControl>
                   <FormMessage className="text-red-500 dark:text-red-400 text-sm">
-                    {fieldState.error && t.validation_messages[fieldState.error.message as keyof typeof t.validation_messages]}
+                    {fieldState.error &&
+                      t.validation_messages[
+                        fieldState.error
+                          .message as keyof typeof t.validation_messages
+                      ]}
                   </FormMessage>
                 </FormItem>
               )}
@@ -287,18 +340,28 @@ const SignUpForm = () => {
               name="confirmPassword"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel className="text-gray-700 dark:text-gray-300">{t.confirmPassword}</FormLabel>
+                  <FormLabel className="text-gray-700 dark:text-gray-300">
+                    {t.confirmPassword}
+                  </FormLabel>
                   <FormControl>
                     <Input
                       placeholder={t.confirmPassword}
                       type="password"
                       {...field}
                       disabled={loading}
-                      className={`dark:bg-slate-700 ${fieldState.error ? 'border-red-500 dark:border-red-500' : ''}`}
+                      className={`dark:bg-slate-700 ${
+                        fieldState.error
+                          ? "border-red-500 dark:border-red-500"
+                          : ""
+                      }`}
                     />
                   </FormControl>
                   <FormMessage className="text-red-500 dark:text-red-400 text-sm">
-                    {fieldState.error && t.validation_messages[fieldState.error.message as keyof typeof t.validation_messages]}
+                    {fieldState.error &&
+                      t.validation_messages[
+                        fieldState.error
+                          .message as keyof typeof t.validation_messages
+                      ]}
                   </FormMessage>
                 </FormItem>
               )}
@@ -322,11 +385,8 @@ const SignUpForm = () => {
           </Button>
 
           <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-            {t.already_have_account}{' '}
-            <Link
-              href="/auth/sign-in" 
-              className="text-primary hover:underline"
-            >
+            {t.already_have_account}{" "}
+            <Link href="/auth/sign-in" className="text-primary hover:underline">
               {t.login}
             </Link>
           </div>

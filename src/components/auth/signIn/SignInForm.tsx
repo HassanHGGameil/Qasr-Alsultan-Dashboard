@@ -54,7 +54,7 @@ const SignInForm = () => {
       errors: {
         invalid_credentials: "Invalid email or password",
         default: "Failed to sign in. Please try again.",
-      }
+      },
     },
     ar: {
       title: "مرحباً بعودتك",
@@ -73,8 +73,8 @@ const SignInForm = () => {
       errors: {
         invalid_credentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة",
         default: "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
-      }
-    }
+      },
+    },
   };
 
   const t = translations[locale as keyof typeof translations];
@@ -91,7 +91,7 @@ const SignInForm = () => {
     try {
       setLoading(true);
 
-      const result = await signIn('credentials', {
+      const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
@@ -99,25 +99,25 @@ const SignInForm = () => {
 
       if (result?.error) {
         toast.error(
-          result.error === "CredentialsSignin" 
-            ? t.errors.invalid_credentials 
+          result.error === "CredentialsSignin"
+            ? t.errors.invalid_credentials
             : t.errors.default
         );
         return;
       }
 
-      router.push('/');
+      router.push("/dashboard");
       router.refresh();
     } catch (error) {
       toast.error(t.errors.default);
-      axiosErrorHandler(error)
+      axiosErrorHandler(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -131,7 +131,9 @@ const SignInForm = () => {
           height={150}
           className="mx-auto mb-4 rounded-lg"
         />
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">{t.title}</h2>
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+          {t.title}
+        </h2>
         <p className="text-gray-600 dark:text-gray-400 mt-2">{t.subtitle}</p>
       </div>
 
@@ -142,18 +144,28 @@ const SignInForm = () => {
             name="email"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 dark:text-gray-300">{t.email}</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">
+                  {t.email}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder={t.email}
                     type="email"
                     {...field}
                     disabled={loading}
-                    className={`dark:bg-slate-700 ${fieldState.error ? 'border-red-500 dark:border-red-500' : ''}`}
+                    className={`dark:bg-slate-700 ${
+                      fieldState.error
+                        ? "border-red-500 dark:border-red-500"
+                        : ""
+                    }`}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500 dark:text-red-400 text-sm">
-                  {fieldState.error && t.validation_messages[fieldState.error.message as keyof typeof t.validation_messages]}
+                  {fieldState.error &&
+                    t.validation_messages[
+                      fieldState.error
+                        .message as keyof typeof t.validation_messages
+                    ]}
                 </FormMessage>
               </FormItem>
             )}
@@ -164,26 +176,36 @@ const SignInForm = () => {
             name="password"
             render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel className="text-gray-700 dark:text-gray-300">{t.password}</FormLabel>
+                <FormLabel className="text-gray-700 dark:text-gray-300">
+                  {t.password}
+                </FormLabel>
                 <FormControl>
                   <Input
                     placeholder={t.password}
                     type="password"
                     {...field}
                     disabled={loading}
-                    className={`dark:bg-slate-700 ${fieldState.error ? 'border-red-500 dark:border-red-500' : ''}`}
+                    className={`dark:bg-slate-700 ${
+                      fieldState.error
+                        ? "border-red-500 dark:border-red-500"
+                        : ""
+                    }`}
                   />
                 </FormControl>
                 <FormMessage className="text-red-500 dark:text-red-400 text-sm">
-                  {fieldState.error && t.validation_messages[fieldState.error.message as keyof typeof t.validation_messages]}
+                  {fieldState.error &&
+                    t.validation_messages[
+                      fieldState.error
+                        .message as keyof typeof t.validation_messages
+                    ]}
                 </FormMessage>
               </FormItem>
             )}
           />
 
           <div className="flex items-center justify-between">
-            <Link 
-              href="/auth/forgot-password" 
+            <Link
+              href="/auth/forgot-password"
               className="text-sm text-primary hover:underline"
             >
               {t.forgot_password}
@@ -207,11 +229,8 @@ const SignInForm = () => {
           </Button>
 
           <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
-            {t.no_account}{' '}
-            <Link
-              href="/auth/sign-up" 
-              className="text-primary hover:underline"
-            >
+            {t.no_account}{" "}
+            <Link href="/auth/sign-up" className="text-primary hover:underline">
               {t.sign_up}
             </Link>
           </div>

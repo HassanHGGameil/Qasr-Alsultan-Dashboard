@@ -18,7 +18,10 @@ function PickSize({ sizes, item }: { sizes: SizesProps; item: ItemProps }) {
 
   return (
     <RadioGroup defaultValue="comfortable">
-      <div key={id} className="flex items-center space-x-2 border-gray-100 rounded-md p-4">
+      <div
+        key={id}
+        className="flex items-center space-x-2 border-gray-100 rounded-md p-4"
+      >
         <RadioGroupItem value="default" id={id} />
         <Label htmlFor={id}>
           {name}-and-{formatCurrency(price + item.basePrice)}

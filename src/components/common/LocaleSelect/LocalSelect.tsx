@@ -46,15 +46,17 @@ export default function LocalSelect({ defaultValue, className }: Props) {
         </SelectTrigger>
         <SelectContent className="min-w-[var(--radix-select-trigger-width)] ">
           {routing.locales.map((lang) => (
-            <SelectItem key={lang} value={lang} className="group focus:bg-green-300">
+            <SelectItem
+              key={lang}
+              value={lang}
+              className="group focus:bg-green-300"
+            >
               <div className="flex w-full items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium ">
                     {languageNames[lang] || lang.toUpperCase()}
                   </span>
-                 
                 </div>
-                
               </div>
             </SelectItem>
           ))}

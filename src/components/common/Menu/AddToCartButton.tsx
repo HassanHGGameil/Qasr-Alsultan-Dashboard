@@ -110,7 +110,9 @@ function AddToCartButton({ item }: { item: PopupProps }) {
         </div>
 
         <DialogFooter>
-          <Button className="w-full h-10 " type="submit">Add To Cart</Button>
+          <Button className="w-full h-10 " type="submit">
+            Add To Cart
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

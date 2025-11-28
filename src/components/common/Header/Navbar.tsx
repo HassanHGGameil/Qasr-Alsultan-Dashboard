@@ -24,7 +24,7 @@ const Navbar = () => {
       id: crypto.randomUUID(),
       titleEn: "Offers",
       titleAr: "عروض قصر لسلطان",
-      href: Routes.COURSES,
+      href: Routes.OFFERS,
     },
     {
       id: crypto.randomUUID(),
@@ -33,7 +33,6 @@ const Navbar = () => {
       href: Routes.ABOUT,
     },
 
-   
     {
       id: crypto.randomUUID(),
       titleEn: "About QasrAlsutan",
