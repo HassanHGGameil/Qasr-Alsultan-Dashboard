@@ -88,24 +88,35 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
+  // Pages configuration for proper redirects
+  pages: {
+    signIn: "/auth/sign-in",
+    error: "/auth/sign-in",
+  },
+
   // Cookie settings for both development and production
   cookies: {
     sessionToken: {
-      name: `__Secure-${
-        process.env.NODE_ENV === "production" ? "" : "dev-"
+      name: `${
+        process.env.NODE_ENV === "production" &&
+        process.env.NEXTAUTH_URL?.startsWith("https")
+          ? "__Secure-"
+          : ""
       }next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
-        secure: process.env.NODE_ENV === "production",
-        domain:
-          process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined, // replace with your domain
+        // Only set secure to true if using HTTPS
+        secure: process.env.NEXTAUTH_URL?.startsWith("https") ?? false,
+        // Don't set domain - let browser handle it automatically for same-origin
+        // This works better across different deployment scenarios
+        domain: undefined,
       },
     },
   },
 
-  debug: false,
+  debug: process.env.NODE_ENV === "development",
 
   // ✔ Required for signing sessions
   secret: process.env.NEXT_AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,

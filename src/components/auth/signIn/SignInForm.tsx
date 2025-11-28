@@ -95,6 +95,7 @@ const SignInForm = () => {
         email: data.email,
         password: data.password,
         redirect: false,
+        callbackUrl: `/${locale}/dashboard`,
       });
 
       if (result?.error) {
@@ -106,8 +107,11 @@ const SignInForm = () => {
         return;
       }
 
-      router.push("/dashboard");
-      router.refresh();
+      // If successful, redirect to dashboard
+      if (result?.ok) {
+        router.push(`/${locale}/dashboard`);
+        router.refresh();
+      }
     } catch (error) {
       toast.error(t.errors.default);
       axiosErrorHandler(error);
