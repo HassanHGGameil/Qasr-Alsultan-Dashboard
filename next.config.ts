@@ -1,29 +1,55 @@
-
 import createNextIntlPlugin from "next-intl/plugin";
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
-  
+  output: "standalone",
+
   // Ensure proper trailing slashes
   trailingSlash: false,
+
+  // Enable React Strict Mode for better development experience
+  reactStrictMode: true,
+
+  // Configure headers for security and authentication
+  async headers() {
+    return [
+      {
+        // Apply these headers to all routes
+        source: "/(.*)",
+        headers: [
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "SAMEORIGIN",
+          },
+          {
+            key: "X-XSS-Protection",
+            value: "1; mode=block",
+          },
+        ],
+      },
+    ];
+  },
 
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
+        protocol: "https",
         hostname: "res.cloudinary.com",
         pathname: "/**",
       },
       {
-        protocol: 'https',
+        protocol: "https",
         hostname: "lh3.googleusercontent.com",
         pathname: "/**",
       },
       {
-        protocol: 'https',
+        protocol: "https",
         hostname: "avatars.githubusercontent.com",
         pathname: "/**",
       },

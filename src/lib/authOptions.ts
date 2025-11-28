@@ -46,7 +46,7 @@ export const authOptions: NextAuthOptions = {
             name: user.name,
             role: user.role,
           };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           throw new Error("Invalid email or password");
         }
@@ -88,15 +88,19 @@ export const authOptions: NextAuthOptions = {
     },
   },
 
-  // ✔ Secure cookies for production (HTTPS)
+  // Cookie settings for both development and production
   cookies: {
     sessionToken: {
-      name: "__Secure-next-auth.session-token",
+      name: `__Secure-${
+        process.env.NODE_ENV === "production" ? "" : "dev-"
+      }next-auth.session-token`,
       options: {
         httpOnly: true,
         sameSite: "lax",
         path: "/",
         secure: process.env.NODE_ENV === "production",
+        domain:
+          process.env.NODE_ENV === "production" ? ".yourdomain.com" : undefined, // replace with your domain
       },
     },
   },
