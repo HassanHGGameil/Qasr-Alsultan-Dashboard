@@ -1,22 +1,28 @@
-import getCurrentUser from "@/actions/getCurrentUser";
-import SignUp from "@/components/auth/SignUp";
-import { redirect } from "@/i18n/routing";
+
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { DOMAIN } from "@/lib/constains/constains";
-import React from "react";
+import { useEffect } from "react";
+import SignUp from "@/components/auth/SignUp";
 
-const SignUpPage = async () => {
-  const currentUser = await getCurrentUser();
+const SignUpPage = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  if (currentUser) {
-    redirect({
-      href: `${DOMAIN}/en/dahsboard`,
-      locale: "en",
-    });
-    return null;
-  }
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push(`${DOMAIN}/en/dashboard`);
+    }
+  }, [status, router]);
+
+  if (status === "loading") return null;
+  if (status === "authenticated") return null; // Prevent flash
 
   return (
-    <section className="  w-full">
+     <section className="  w-full">
       <div className="container">
         <SignUp />
       </div>
@@ -25,3 +31,4 @@ const SignUpPage = async () => {
 };
 
 export default SignUpPage;
+

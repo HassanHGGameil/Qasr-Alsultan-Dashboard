@@ -1,19 +1,24 @@
-import getCurrentUser from "@/actions/getCurrentUser";
+"use client";
+
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import SignIn from "@/components/auth/signIn";
-import { redirect } from "@/i18n/routing";
 import { DOMAIN } from "@/lib/constains/constains";
-import React from "react";
+import { useEffect } from "react";
 
-const SignInPage = async () => {
-  const currentUser = await getCurrentUser();
+const SignInPage = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  if (currentUser) {
-    redirect({
-      href: `${DOMAIN}/en/dahsboard`,
-      locale: "en",
-    });
-    return null;
-  }
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push(`${DOMAIN}/en/dashboard`);
+    }
+  }, [status, router]);
+
+  if (status === "loading") return null;
+  if (status === "authenticated") return null; // Prevent flash
 
   return (
     <section className="w-full">
