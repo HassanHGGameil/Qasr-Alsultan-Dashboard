@@ -18,7 +18,7 @@ import axios from "axios";
 import { useLocale } from "next-intl";
 import { Loader2, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import MansourLogo from "../../../../public/icons/qasr-alsutan-logo.png";
 import Image from "next/image";
 import { axiosErrorHandler } from "@/utils";
@@ -50,6 +50,8 @@ const SignUpForm = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const locale = useLocale();
   const router = useRouter();
+  const { data: session } = useSession();
+  const role = session?.user?.role;
 
   const translations = {
     en: {
@@ -122,39 +124,55 @@ const SignUpForm = () => {
   });
 
   const onSubmit = async (data: FormValues) => {
-    try {
-      setLoading(true);
-      await axios.post("/api/register", {
-        name: data.name,
-        email: data.email,
-        phone: data.phone,
-        userPlatform: "DASHBOARD",
+  try {
+    setLoading(true);
 
-        password: data.password,
-      });
+    // 1️⃣ Register user
+    await axios.post("/api/register", {
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      userPlatform: "DASHBOARD",
+      password: data.password,
+    });
 
-      const signInResult = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
+    // 2️⃣ Sign in user
+    const signInResult = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    });
 
-      if (signInResult?.error) {
-        toast.error(t.error);
-        return;
-      }
-
-      toast.success(t.success);
-      setIsSubmitted(true);
-      router.push("/dashboard");
-      router.refresh();
-    } catch (error) {
-      toast.error(t.error);
-      axiosErrorHandler(error);
-    } finally {
-      setLoading(false);
+    if (signInResult?.error) {
+      toast.error(signInResult.error || t.error);
+      return;
     }
-  };
+
+    // 3️⃣ Success notification
+    toast.success(t.success);
+    setIsSubmitted(true);
+
+    // 4️⃣ Navigate based on role
+    if (role === "USER") {
+      await router.push(`/`);
+    } else {
+      await router.push(`/dashboard`);
+    }
+
+    // Optional: refresh data if needed
+    // router.refresh();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    // Better error handling
+    const message =
+      error?.response?.data?.message || error?.message || t.error;
+    toast.error(message);
+    axiosErrorHandler(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   if (isSubmitted) {
     return (

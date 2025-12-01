@@ -1,9 +1,9 @@
+import { TBranches } from "@/components/StoreActionUi/Branches/Branch/branchType";
 import { STORE } from "@/lib/constains/constains"; 
-import { BranchesDto } from "@/types/frontendType/branches"; 
 
 const URL = `${STORE}/api/home/branches`;
 
-const getBranches = async (): Promise<BranchesDto[]> => {
+const getBranches = async (): Promise<TBranches[]> => {
 
   const res = await fetch(`${URL}`, {
     cache: "no-store",

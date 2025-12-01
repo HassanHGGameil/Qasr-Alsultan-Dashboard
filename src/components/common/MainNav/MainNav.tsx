@@ -3,9 +3,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import React, { useState } from "react";
 import {
-  IoBagCheckOutline,
   IoGitBranchOutline,
-  IoImageOutline,
   IoListOutline,
 } from "react-icons/io5";
 import { PiUsersThreeLight } from "react-icons/pi";
@@ -14,7 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 
 import Link from "../Link";
-import { HiOutlineRectangleStack } from "react-icons/hi2";
+import { HiOutlineClipboardDocument, HiOutlinePresentationChartBar, HiOutlineQueueList, HiOutlineRectangleStack } from "react-icons/hi2";
 
 type NavItem = {
   id: number;
@@ -53,7 +51,7 @@ const MainNav = ({
       id: 1,
       href: "/dashboard",
       label: "Overview",
-      icon: <IoBagCheckOutline />,
+      icon: <HiOutlinePresentationChartBar />,
     },
     {
       id: 2,
@@ -61,25 +59,40 @@ const MainNav = ({
       label: "Users",
       icon: <PiUsersThreeLight />,
     },
+
     {
       id: 3,
-      href: "/dashboard/hero",
-      label: "Hero",
-      icon: <IoImageOutline />,
+      label: "Sections",
+      icon: <HiOutlineQueueList />,
+      isMenu: true,
+      menuKey: "sections",
+      children: [
+        { id: 71, href: `/dashboard/sections/hero`, label: "Hero" },
+        { id: 72, href: "/dashboard/sections/banner", label: "Banner" },
+        { id: 73, href: "/dashboard/sections/mainSection", label: "MainSection" },
+      ],
     },
+    
 
     {
       id: 4,
-      href: "/dashboard/home",
-      label: "HomePage",
-      icon: <IoBagCheckOutline />,
+      label: "Pages",
+      icon: <HiOutlineClipboardDocument />,
+      isMenu: true,
+      menuKey: "pages",
+      children: [
+        { id: 71, href: `/dashboard/home`, label: "Home" },
+        { id: 72, href: "/dashboard/menu", label: "Menu" },
+        { id: 73, href: "/dashboard/branches", label: "Branches" },
+        { id: 74, href: "/dashboard/Offers", label: "Offers" },
+        { id: 75, href: "/dashboard/butchers", label: "Butchers" },
+        { id: 76, href: "/dashboard/about", label: "about" },
+      ],
     },
-    // {
-    //   id: 4,
-    //   href: "/billboards",
-    //   label: "Billboard",
-    //   icon: <IoPricetagsOutline />,
-    // },
+    
+
+    
+   
     {
       id: 5,
       href: "/dashboard/home/branches",

@@ -5,7 +5,12 @@ import React, { useEffect, useState } from "react";
 import { CiShoppingCart } from "react-icons/ci";
 import { motion } from "framer-motion";
 
-const BasketCart = () => {
+
+interface headingProps {
+    className?: string;
+}
+
+const BasketCart = ({className}: headingProps) => {
   const cart = useAppSelector((state) => state.cart);
   const [uniqueProductCount, setUniqueProductCount] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -32,7 +37,7 @@ const BasketCart = () => {
           opacity: 1
         }}
         transition={{ duration: 0.3 }}
-        className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center"
+        className={`absolute -top-2 -right-2 bg-red-800 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center ${className} `}
       >
         {uniqueProductCount}
       </motion.span>

@@ -53,6 +53,10 @@ const BranchesForm: React.FC<BranchesFormProps> = ({ initialData }) => {
       titleEn: "",
       titleAr: "",
       imageUrl: "",
+      dateEn: "",
+      dateAr: "",
+      phone: "",
+      locationLink: "",
     },
   });
 
@@ -72,7 +76,7 @@ const BranchesForm: React.FC<BranchesFormProps> = ({ initialData }) => {
       }
 
       toast.success(toastMessage);
-      router.push(`/home/branches`);
+      router.push(`/dashboard/home/branches`);
       router.refresh();
     } catch (error) {
       toast.error(axiosErrorHandler(error) || "Something went wrong");
@@ -87,7 +91,7 @@ const BranchesForm: React.FC<BranchesFormProps> = ({ initialData }) => {
     try {
       setLoading(true);
       await axios.delete(`${DOMAIN}/api/home/branches/${params.branchId}`);
-      router.push(`/home/branches`);
+      router.push(`/dashboard/home/branches`);
       toast.success("Category Deleted.");
       router.refresh();
     } catch (error) {
@@ -179,11 +183,11 @@ const BranchesForm: React.FC<BranchesFormProps> = ({ initialData }) => {
               name="titleEn"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name-En</FormLabel>
+                  <FormLabel>Title-En</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Category Name-En"
+                      placeholder="Title-En"
                       className=" placeholder:text-gray-500"
                       {...field}
                     />
@@ -198,11 +202,91 @@ const BranchesForm: React.FC<BranchesFormProps> = ({ initialData }) => {
               name="titleAr"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name-Ar</FormLabel>
+                  <FormLabel>Title-Ar</FormLabel>
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Category Name-Ar"
+                      placeholder="Title-Ar"
+                      className=" placeholder:text-gray-500"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-600" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-3 gap-8">
+            <FormField
+              control={form.control}
+              name="dateEn"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>DateEn / Time</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="DateEn / Time"
+                      className=" placeholder:text-gray-500"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-600" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="dateAr"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>DateAr / Time</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="DateAr / Time"
+                      className=" placeholder:text-gray-500"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-600" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-3 gap-8">
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Branch Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Branch Phone"
+                      className=" placeholder:text-gray-500"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-600" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="locationLink"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location Link</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={loading}
+                      placeholder="Location Link"
                       className=" placeholder:text-gray-500"
                       {...field}
                     />

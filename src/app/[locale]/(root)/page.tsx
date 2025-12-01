@@ -1,5 +1,6 @@
 import FilterCategoryProduct from "@/components/StoreActionUi/Home/FilterCategoryProduct/FilterCategoryProduct";
 import HeroClient from "@/components/StoreActionUi/Home/Hero/HeroClient";
+import HomeSectionClient from "@/components/StoreActionUi/Home/NewSection/SectionClient";
 import ProductSlideClient from "@/components/StoreActionUi/Home/Products/ProductSlides/ProductSlideClient";
 import getCategories from "@/lib/Actions/FrontendAction/getCategories";
 import getProducts from "@/lib/Actions/FrontendAction/getProducts";
@@ -24,7 +25,6 @@ export default async function Home({ params }: PageProps) {
     const sortedProducts = products.sort((a, b) => a.position - b.position);
 
 
-  console.log("CATEGORIES", categories);
 
   return (
     <main className="">
@@ -35,6 +35,7 @@ export default async function Home({ params }: PageProps) {
         categories={sortedCategories.reverse()}
         products={sortedProducts}
       />
+      <HomeSectionClient />
       {/* <NewSection /> */}
     </main>
   );

@@ -30,7 +30,7 @@ const BranchesClient: React.FC<CategoryClientProps> = ({ data }) => {
           description="Mange Branches for your store "
         />
 
-        <Button className="" onClick={() => router.push(`/home/branches/new`)}>
+        <Button className="" onClick={() => router.push(`/dashboard/home/branches/new`)}>
           <Plus className="mr-2 h-4 w-4" />
           Add New
         </Button>

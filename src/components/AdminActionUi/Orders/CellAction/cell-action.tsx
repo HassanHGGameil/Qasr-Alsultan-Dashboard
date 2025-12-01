@@ -70,7 +70,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push(`/orders/${data.id}`)}
+          onClick={() => router.push(`/dashboard/orders/${data.id}`)}
           aria-label="Edit Order"
           className="hover:bg-blue-100 hover:text-blue-600 transition-colors"
         >

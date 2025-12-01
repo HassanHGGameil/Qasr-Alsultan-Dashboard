@@ -24,7 +24,7 @@ interface CellActionProps {
   data: UserColumnType;
 }
 
-const roles: Role[] = ["OWNER", "MANAGER", "ADMIN", "USER"];
+const roles: Role[] = ["OWNER", "MANAGER","DEVELOPER", "ADMIN", "USER"];
 
 const CellAction: React.FC<CellActionProps> = ({ data }) => {
   const router = useRouter();

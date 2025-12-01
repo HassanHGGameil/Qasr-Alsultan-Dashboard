@@ -37,8 +37,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import getBranches from "@/lib/Actions/FrontendAction/getBranches";
-import { BranchesDto } from "@/types/frontendType/branches"; 
 import { formater } from "@/lib/utils/utils"; 
+import { TBranches } from "../Branches/Branch/branchType";
 
 const translations = {
   en: {
@@ -123,7 +123,7 @@ export default function CheckoutForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [branches, setBranches] = useState<BranchesDto[]>([]);
+  const [branches, setBranches] = useState<TBranches[]>([]);
 
   const locale = useLocale() as Locale;
   const t = translations[locale];

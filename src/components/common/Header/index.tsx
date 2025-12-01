@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 py-2 bg-white/95 dark:bg-slate-900/80 border-b border-gray-200 dark:border-slate-700">
       <div className="container flex items-center justify-between">
-        <div className="w-[60px] lg:w-[75px] bg-white dark:bg-blue-900/20 p-1 rounded-2xl  shadow-sm shadow-blue-900/30 dark:shadow-blue-900/30 flex items-center justify-center border border-gray-200 dark:border-blue-800/50">
+        <div className="w-[60px] lg:w-[75px] bg-white dark:bg-red-900/20 p-1 rounded-2xl  shadow-sm shadow-red-900/30 dark:shadow-red-900/30 flex items-center justify-center border border-gray-200 dark:border-red-800/50">
           <Link href={Routes.ROOT}>
             <Image
               src={theme === "dark" ? moLogoLight : moLogoDark}

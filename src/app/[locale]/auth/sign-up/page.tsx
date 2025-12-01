@@ -1,22 +1,28 @@
 
 "use client";
-
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { DOMAIN } from "@/lib/constains/constains";
 import { useEffect } from "react";
 import SignUp from "@/components/auth/SignUp";
+import { useRouter } from "@/i18n/routing";
 
 const SignUpPage = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: session, status } = useSession();
   const router = useRouter();
 
+ const role = session?.user?.role;
+
   useEffect(() => {
     if (status === "authenticated") {
-      router.push(`${DOMAIN}/en/dashboard`);
+      const redirect = async () => {
+        if (role === "USER") {
+          await router.push(`/`);
+        } else {
+          await router.push(`/dashboard`);
+        }
+      };
+      redirect();
     }
-  }, [status, router]);
+  }, [status, role, router]);
 
   if (status === "loading") return null;
   if (status === "authenticated") return null; // Prevent flash

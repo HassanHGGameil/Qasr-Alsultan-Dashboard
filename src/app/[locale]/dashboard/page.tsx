@@ -15,6 +15,17 @@ import Overview from "@/components/AdminActionUi/Overview/Overview";
 import { CiLaptop, CiMobile1 } from "react-icons/ci";
 import HeadingTwo from "@/components/common/Heading/HeadingTow";
 import { getAllAdmin } from "@/lib/Actions/getAllAdmin";
+import { Metadata } from "next";
+
+
+export const metadata: Metadata = {
+  title: {
+    default: "Dashboard",
+    template: "%s | Qasr Alsultan",
+  },
+  
+};
+
 
 const DashboardPage = async () => {
   const currentUser = await getCurrentUser();
@@ -29,7 +40,7 @@ const DashboardPage = async () => {
   const graphRevenue = await getGraphRevenue();
 
   const isManger =
-    currentUser?.role === "OWNER" || currentUser?.role === "MANAGER";
+    currentUser?.role === "OWNER" || currentUser?.role === "MANAGER" || currentUser?.role === "DEVELOPER";
 
   return (
     <section className="container w-full">

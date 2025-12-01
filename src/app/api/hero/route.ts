@@ -3,7 +3,10 @@ import { CorsHandler } from "@/lib/CorsHandler/CorsHndler";
 import { generateSlug } from "@/lib/HandleSlug/slugfy";
 import prismadb from "@/lib/prismaDB/prismadb";
 import { axiosErrorHandler } from "@/utils";
-import { heroSectionSchema, IHeroDto } from "@/validations/heroSection";
+import {
+  heroSectionSchema,
+  IHeroDto,
+} from "@/validations/sections/heroSection";
 
 import { NextRequest, NextResponse } from "next/server";
 
@@ -43,18 +46,17 @@ export async function POST(req: NextRequest) {
       ? generateSlug(body.titleEn)
       : generateSlug(body.titleAr, true);
 
-
-      const lastHero = await prismadb.hero.findFirst({
-            orderBy: { position: "desc" },
-          });
-      const newPosition = lastHero ? Number(lastHero.position) + 1 : 1;
+    const lastHero = await prismadb.hero.findFirst({
+      orderBy: { position: "desc" },
+    });
+    const newPosition = lastHero ? Number(lastHero.position) + 1 : 1;
 
     // ✅ Create the Export Service with nested features
     const hero = await prismadb.hero.create({
       data: {
         slug,
-         ...body,
-         position: newPosition,
+        ...body,
+        position: newPosition,
         heroImages: {
           createMany: {
             data: body.heroImages.map((image) => ({ url: image.url })),

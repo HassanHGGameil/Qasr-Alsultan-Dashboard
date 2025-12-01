@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
 import MansourLogo from "../../../../public/icons/qasr-alsutan-logo.png";
 import Image from "next/image";
@@ -35,6 +35,12 @@ const SignInForm = () => {
   const [loading, setLoading] = useState(false);
   const locale = useLocale();
   const router = useRouter();
+    const { data: session } = useSession();
+
+     const role = session?.user?.role;
+  
+
+
 
   const translations = {
     en: {
@@ -88,37 +94,43 @@ const SignInForm = () => {
   });
 
   const onSubmit = async (data: FormValues) => {
-    try {
-      setLoading(true);
+  try {
+    setLoading(true);
 
-      const result = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-        callbackUrl: `/${locale}/dashboard`,
-      });
+    const result = await signIn("credentials", {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+      callbackUrl: `/`,
+    });
 
-      if (result?.error) {
-        toast.error(
-          result.error === "CredentialsSignin"
-            ? t.errors.invalid_credentials
-            : t.errors.default
-        );
-        return;
-      }
-
-      // If successful, redirect to dashboard
-      if (result?.ok) {
-        router.push(`/${locale}/dashboard`);
-        router.refresh();
-      }
-    } catch (error) {
-      toast.error(t.errors.default);
-      axiosErrorHandler(error);
-    } finally {
-      setLoading(false);
+    if (result?.error) {
+      const message =
+        result.error === "CredentialsSignin"
+          ? t.errors.invalid_credentials
+          : t.errors.default;
+      toast.error(message);
+      return;
     }
-  };
+
+    if (result?.ok) {
+      // Redirect based on role
+      if (role === "USER") {
+        await router.push(`/`);
+      } else {
+        await router.push(`/dashboard`);
+      }
+      // router.refresh(); // Optional, remove if not needed
+    }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    const message = error?.response?.data?.message || t.errors.default;
+    toast.error(message);
+    axiosErrorHandler(error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <motion.div

@@ -1,8 +1,9 @@
 import getCurrentUser from "@/actions/getCurrentUser";
 import Heading from "@/components/common/Heading/Heading";
 import Link from "@/components/common/Link";
-import { Image as ImageIcon, Star, LayoutGrid } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 import React from "react";
+import { HiOutlineCreditCard, HiOutlineTag } from "react-icons/hi2";
 
 const HomePage = async () => {
   const currentUser = await getCurrentUser();
@@ -58,28 +59,28 @@ const HomePage = async () => {
 
             {/* Best Sellers */}
             <Link
-              href="/dashboard/home/best-sellers"
+              href={`/dashboard/sections/mainSection/692be03e152fe9fedb14152a`}
               className="p-5 bg-primary/5 border rounded-lg flex flex-col gap-3 hover:bg-primary/10 transition"
             >
-              <Star className="w-6 h-6 text-primary" />
+              <HiOutlineCreditCard className="w-6 h-6 text-primary" />
               <div>
-                <h4 className="font-semibold">Best Sellers</h4>
+                <h4 className="font-semibold">Home Last Section </h4>
                 <p className="text-sm text-muted-foreground">
-                  Select your top-selling products.
+                  Edite Last Section.
                 </p>
               </div>
             </Link>
 
             {/* Featured Section */}
             <Link
-              href="/dashboard/home/hero"
+              href={`/dashboard/sections/banner`}
               className="p-5 bg-primary/5 border rounded-lg flex flex-col gap-3 hover:bg-primary/10 transition"
             >
-              <LayoutGrid className="w-6 h-6 text-primary" />
+              <HiOutlineTag className="w-6 h-6 text-primary" />
               <div>
-                <h4 className="font-semibold">Featured Section</h4>
+                <h4 className="font-semibold">Home Banner</h4>
                 <p className="text-sm text-muted-foreground">
-                  Highlight special items or offers.
+                  Edite Home Banner
                 </p>
               </div>
             </Link>

@@ -62,7 +62,7 @@ const CellAction: React.FC<CellActionProps> = ({ data }) => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => router.push(`/home/branches/${data.id}`)}
+          onClick={() => router.push(`/dashboard/home/branches/${data.id}`)}
           title="Edit"
         >
           <Edit className="h-4 w-4" />

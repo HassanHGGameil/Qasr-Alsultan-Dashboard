@@ -18,13 +18,6 @@ const UsersClient: React.FC<UserClientProps> = ({ data }) => {
           description="Mange Users for your store "
         />
 
-        {/* <Button
-          className="bg-green-400"
-          onClick={() => router.push(`/users/new `)}
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          Add New
-        </Button> */}
       </div>
       <Separator className="bg-slate-300" />
 

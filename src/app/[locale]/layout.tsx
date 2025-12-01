@@ -46,12 +46,12 @@ export default async function LocaleLayout({
   // side is the easiest way to get started
   const messages = await getMessages();
 
-  const currentLocale = locale ?? "en"; // default to Arabic
+  const currentLocale = locale ?? "ar"; // default to Arabic
 
   return (
     <html
       lang={currentLocale}
-      dir={currentLocale === "en" ? "ltr" : "rtl"}
+      dir={currentLocale === "ar" ? "rtl" : "ltr"}
       suppressHydrationWarning
     >
       <body className={`bg-[#FBFBFB] dark:bg-slate-900 ${myFont.className}`}>

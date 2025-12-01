@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import BasketCart from "../Ecommerce/BasketCart/BasketCart";
 import Link from "@/components/common/Link";
+import ProfileMenu from "@/components/common/ProfileMenu/ProfileMenu";
 
 const NAV_LINKS = [
   {
@@ -34,7 +35,7 @@ const NAV_LINKS = [
     id: "nav-butcher",
     titleEn: "Qasr Alsultan Butcher",
     titleAr: "جزاره قصر السلطان",
-    href: Routes.ABOUT,
+    href: Routes.BUTCHER,
   },
   {
     id: "nav-branches",
@@ -46,10 +47,9 @@ const NAV_LINKS = [
     id: "nav-about",
     titleEn: "About QasrAlsutan",
     titleAr: "عن فصر السلطان",
-    href: Routes.CONTACT,
+    href: Routes.ABOUT,
   },
 ];
-
 
 const Navbar = () => {
   const [openMenu, setOpenMenu] = useState(false);
@@ -82,7 +82,9 @@ const Navbar = () => {
   return (
     <nav className="flex-2 justify-end flex">
       <div className="lg:hidden flex items-center gap-4">
-        <BasketCart />
+        {/* <BasketCart /> */}
+        <ProfileMenu />
+
         <Button
           variant="secondary"
           size="sm"
@@ -139,6 +141,7 @@ const Navbar = () => {
         <div className="">
           <div className="flex items-center gap-4 mt-6 lg:mt-0">
             <LocalSelect defaultValue={locale} className="  lg:hidden" />
+
             <ThemeToggler />
             <BasketCart />
           </div>

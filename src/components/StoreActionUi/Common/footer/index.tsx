@@ -10,7 +10,7 @@ import {
 } from "react-icons/fa";
 
 import { ReactNode } from "react";
-import markupLogo from "../../../../../public/icons/logo-mark.png";
+import markupLogo from "../../../../../public/icons/markup-logo-2.png";
 import FooterLogo from "./FooterLogo";
 import Link from "@/components/common/Link";
 

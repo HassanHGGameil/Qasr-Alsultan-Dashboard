@@ -67,7 +67,7 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
       }
 
       toast.success(toastMessage);
-      router.push("/home/categories");
+      router.push("/dashboard/home/categories");
     } catch (error) {
       toast.error(axiosErrorHandler(error) || "Something went wrong");
     } finally {
@@ -127,7 +127,7 @@ const CategoriesForm: React.FC<CategoryFormProps> = ({ initialData }) => {
           }`}
         >
           {/* English & Arabic names */}
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="grid gap-6 sm:grid-cols-3">
             <FormField
               control={form.control}
               name="nameEn"

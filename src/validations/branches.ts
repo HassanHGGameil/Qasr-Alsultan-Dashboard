@@ -6,6 +6,11 @@ export const createBranchesSchema = z.object({
   titleEn: z.string().min(1),
   titleAr: z.string().min(1),
   imageUrl: z.string().min(1),
+  dateEn: z.string().min(1),
+  dateAr: z.string().min(1),
+
+  phone: z.string().min(1),
+  locationLink: z.string().min(1),
 });
 
 export interface ICreateBranchesDto {
@@ -15,5 +20,9 @@ export interface ICreateBranchesDto {
   titleEn: string;
   titleAr: string;
   imageUrl: string;
+  dateEn: string;
+  dateAr: string;
+  phone: string;
+  locationLink: string;
   createdAt: string;
 }

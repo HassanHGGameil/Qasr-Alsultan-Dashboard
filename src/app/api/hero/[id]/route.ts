@@ -3,7 +3,10 @@ import { CorsHandler } from "@/lib/CorsHandler/CorsHndler";
 import { generateSlug } from "@/lib/HandleSlug/slugfy";
 import prismadb from "@/lib/prismaDB/prismadb";
 import { axiosErrorHandler } from "@/utils";
-import { heroSectionSchema, IHeroDto } from "@/validations/heroSection";
+import {
+  heroSectionSchema,
+  IHeroDto,
+} from "@/validations/sections/heroSection";
 import { NextRequest, NextResponse } from "next/server";
 
 // ✅ Handle OPTIONS (CORS)
@@ -22,7 +25,7 @@ type PageProps = {
 export async function GET(req: NextRequest, { params }: PageProps) {
   try {
     const { id } = await params;
-    if (!id ) {
+    if (!id) {
       return new NextResponse("Export Service ID and slug are required", {
         status: 400,
       });
@@ -73,7 +76,7 @@ export async function PATCH(req: NextRequest, { params }: PageProps) {
     const updatedHero = await prismadb.hero.update({
       where: { id: id, slug },
       data: {
-       ...body,
+        ...body,
         slug: newSlug,
         // ✅ Replace features (delete old and recreate)
         heroImages: {

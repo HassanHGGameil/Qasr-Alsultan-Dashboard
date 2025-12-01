@@ -31,7 +31,7 @@ const UsersPage = async () => {
   }
 
   const isManager =
-    currentUser.role === "OWNER" || currentUser.role === "MANAGER";
+    currentUser.role === "OWNER" || currentUser.role === "MANAGER" || currentUser.role === "DEVELOPER";
 
   return isManager ? (
     <div className="flex-col w-full">

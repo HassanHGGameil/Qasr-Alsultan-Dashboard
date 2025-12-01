@@ -170,7 +170,7 @@ const FilterCategoryProduct = ({
             {/* Show All Products */}
             <div className="mt-16 mb-5 flex items-center justify-center">
               <Link
-                href="/products"
+                href="/menu"
                 className="
                   flex items-center gap-2
                   px-8 py-4

@@ -14,6 +14,7 @@ type HeroColumnType = {
     updatedAt: Date;
     heroId: string;
   }[];
+  
   bgOne?: string | null; // <-- FIXED
   bgTwo?: string | null; // If exist
   createdAt: string;

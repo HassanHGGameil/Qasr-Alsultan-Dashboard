@@ -3,9 +3,13 @@ import Image from "next/image";
 import MansourLogo from "../../../../public/icons/qasr-alsutan-logo.png";
 import { useLocale } from "next-intl";
 import SignInForm from "./SignInForm";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "@/i18n/routing";
+import { FaBurger } from "react-icons/fa6";
 
 const SignIn = () => {
   const locale = useLocale();
+  const router = useRouter()
 
   const title = locale === "ar" ? "تواصل معنا الان" : "Contact With Us Now";
   const description =
@@ -46,6 +50,19 @@ const SignIn = () => {
                 {description}
               </p>
             </div>
+            <Button  type="submit"
+            className=""
+            size="lg" 
+            onClick={() => router.push(`/`)}
+
+            
+            
+            >
+
+              {locale === "en" ? "Take Your Order Now" : "تسوق الان"}
+               <FaBurger  />
+              
+            </Button>
           </div>
         </div>
       </div>

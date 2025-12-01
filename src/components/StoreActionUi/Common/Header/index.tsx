@@ -10,6 +10,7 @@ import { useLocale } from "next-intl";
 import Navbar from "./Navbar";
 import { useTheme } from "next-themes";
 import Link from "@/components/common/Link";
+import ProfileMenu from "@/components/common/ProfileMenu/ProfileMenu";
 
 const Header = () => {
   const locale = useLocale();
@@ -36,8 +37,8 @@ const Header = () => {
 
         <div className="hidden lg:block">
           <div className="  flex items-center gap-5">
-
             <LocalSelect defaultValue={locale} />
+            <ProfileMenu />
           </div>
         </div>
       </div>

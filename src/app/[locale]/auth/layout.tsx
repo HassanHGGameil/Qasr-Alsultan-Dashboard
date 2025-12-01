@@ -7,7 +7,6 @@ interface IAdmin {
   
 }
 
-
 export const metadata: Metadata = {
   title: {
     default: "Auth",
@@ -15,8 +14,6 @@ export const metadata: Metadata = {
   },
   
 };
-
-
 
 function AuthLayout({ children }: IAdmin) {
   return (
